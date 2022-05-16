@@ -120,7 +120,7 @@ export default function CrewCards() {
 
   return (
     <Container sx={{ py: 8 }} maxWidth="md">
-      <Grid container spacing={15}>
+      <Grid container spacing={25}>
         {cards.map((card) => (
           <Grid item key={card} xs={12} sm={6} md={4}>
 

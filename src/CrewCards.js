@@ -10,6 +10,10 @@ import { makeStyles } from '@mui/styles';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import ShareIcon from '@mui/icons-material/Share';
+import { red } from '@mui/material/colors';
+
 
 
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -110,6 +114,15 @@ const useStyles = makeStyles({
   userId: {
     fontSize: '13',
   },
+  favoIcon: {
+    color: '#ff7171',
+    float: 'right',
+  },
+  shareIcon: {
+    color: '#acacac',
+    float: 'right',
+    marginRight: 8,
+  },
 });
 
 
@@ -119,8 +132,8 @@ export default function CrewCards() {
   // const mediaStyles = useCoverCardMediaStyles();
 
   return (
-    <Container sx={{ py: 8 }} maxWidth="md">
-      <Grid container spacing={25}>
+    <Container sx={{ py: 8 }}>
+      <Grid container spacing={8}>
         {cards.map((card) => (
           <Grid item key={card} xs={12} sm={6} md={4}>
 
@@ -161,7 +174,11 @@ export default function CrewCards() {
                 </div>
                 <div>
                   
-                  <span>2022.05.16</span>
+                  <p>2022.05.16
+                    <FavoriteBorderIcon className={styles.favoIcon}/>
+                    <ShareIcon className={styles.shareIcon}/>
+
+                  </p>
                 </div>
               </Box>
               <div className={styles.shadow} />

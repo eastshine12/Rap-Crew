@@ -16,7 +16,7 @@ import CrewCards from '../src/CrewCards';
 
 const theme = createTheme();
 
-export default function templete() {
+export default function index() {
   return (
     <> 
       <Box

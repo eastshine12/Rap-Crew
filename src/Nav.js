@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography';
 import useScrollTrigger from '@mui/material/useScrollTrigger';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
+import Link from 'next/link';
 
 function ElevationScroll(props) {
   const { children, window } = props;
@@ -58,7 +59,7 @@ export default function Nav(props) {
           <Toolbar>
             <CameraIcon sx={{ mr: 2 }} />
             <Typography variant="h6" color="inherit" sx={{ flexGrow: 1 }} noWrap>
-              Rap-Crew
+              <Link href="/">Rap-Crew</Link>
             </Typography>
             <CustomButton variant="outlined">로그인</CustomButton>
           </Toolbar>

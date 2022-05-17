@@ -13,10 +13,51 @@ import Box from '@mui/material/Box';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ShareIcon from '@mui/icons-material/Share';
 import { red } from '@mui/material/colors';
+import Link from 'next/link';
 
 
-
-const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const cards = [
+  {
+    boardNo : 1,
+    title: '제 비트에 같이 작업하실분! 피쳐링 필요하신분',
+    userId : 'RE:ON',
+    userImgUrl: 'images/user1.PNG',
+    likeCount: 7,
+    boardImgUrl : 'images/card1.PNG',
+  },
+  {
+    boardNo : 2,
+    title: '보컬or랩 같이 작업하실 분????',
+    userId : '허슬',
+    userImgUrl: 'images/user2.PNG',
+    likeCount: 7,
+    boardImgUrl : 'images/card2.PNG',
+  },
+  {
+    boardNo : 3,
+    title: '안녕하세요 제 비트에 피처링 해주실 래퍼분들 구합니다',
+    userId : 'Jala Beatz',
+    userImgUrl: 'images/user3.PNG',
+    likeCount: 7,
+    boardImgUrl : 'images/card3.PNG',
+  },
+  {
+    boardNo : 4,
+    title: '크루원 구합니다.',
+    userId : 'THE COMMON',
+    userImgUrl: 'images/Post-Malone.jpg',
+    likeCount: 7,
+    boardImgUrl : 'images/card4.PNG',
+  },
+  {
+    boardNo : 5,
+    title: '같이 작업하고 싶습니다!!',
+    userId : 'Mr.Kim',
+    userImgUrl: '',
+    likeCount: 7,
+    boardImgUrl : 'images/card-default.png',
+  },
+];
 
 const useStyles = makeStyles({
   card: {
@@ -25,9 +66,10 @@ const useStyles = makeStyles({
     boxShadow: '0 8px 24px 0 rgba(0,0,0,0.12)',
     overflow: 'visible',
     borderRadius: '1.5rem',
-    transition: '0.4s',
+    transition: '0.2s',
     '&:hover': {
-      transform: 'translateY(-2px)',
+      cursor: "pointer",
+      transform: 'translateY(-5px)',
       '& $shadow': {
         bottom: '-1.5rem',
       },
@@ -59,7 +101,7 @@ const useStyles = makeStyles({
       display: 'block',
       width: '100%',
       height: '100%',
-      background: 'linear-gradient(to top, #014a7d, rgba(0,0,0,0))',
+      background: 'linear-gradient(to top, #00112a, rgba(0,0,0,0))',
     },
   },
   content: {
@@ -135,55 +177,56 @@ export default function CrewCards() {
     <Container sx={{ py: 8 }}>
       <Grid container spacing={8}>
         {cards.map((card) => (
-          <Grid item key={card} xs={12} sm={6} md={4}>
+          <Grid item key={card.boardNo} xs={12} sm={6} md={4}>
 
-            <Card className={styles.card}>
-              <Box className={styles.main} minHeight={300} position={'relative'}>
-                <CardMedia
-                  image='images/card-default.png'
-                  component="img"
-                  height="300"
-                />
-                <div className={styles.content}>
-                  <div className={styles.tag}>New</div>
-                  <Typography variant={'h2'} className={styles.title}>
-                    {/* 제 비트에 같이 작업하실분! 피쳐링 필요하신분 */}
-                    Test
-                  </Typography>
-                </div>
-              </Box>
-              
-              <Box
-                className={styles.author}
-                m={0}
-                p={3}
-                pt={2}
-                gap={2}
-                bgcolor={'common.white'}
-              >
-                <div>
-                  <Avatar
-                    className={styles.avatar}
-                    src={'images/Post-Malone.jpg'}
-                  ></Avatar>
-                  {/* <AccountCircleRoundedIcon 
-                    color='action'
-                    sx={{ fontSize: 50 }}
-                  /> */}
-                  <span className={styles.userId}>nickname</span>
-                </div>
-                <div>
-                  
-                  <p>2022.05.16
-                    <FavoriteBorderIcon className={styles.favoIcon}/>
-                    <ShareIcon className={styles.shareIcon}/>
+            <Link href={`./view/${card.boardNo}`}>
+              <Card className={styles.card}>
+                <Box className={styles.main} minHeight={300} position={'relative'}>
+                  <CardMedia
+                    image={card.boardImgUrl}
+                    component="img"
+                    height="300"
+                  />
+                  <div className={styles.content}>
+                    <div className={styles.tag}>New</div>
+                    <Typography variant={'h2'} className={styles.title}>
+                      {card.title}
+                    </Typography>
+                  </div>
+                </Box>
+                
+                <Box
+                  className={styles.author}
+                  m={0}
+                  p={3}
+                  pt={2}
+                  gap={2}
+                  bgcolor={'common.white'}
+                >
+                  <div>
+                    <Avatar
+                      className={styles.avatar}
+                      src={card.userImgUrl}
+                    ></Avatar>
+                    {/* <AccountCircleRoundedIcon 
+                      color='action'
+                      sx={{ fontSize: 50 }}
+                    /> */}
+                    <span className={styles.userId}>{card.userId}</span>
+                  </div>
+                  <div>
+                    
+                    <p>2022.05.16
+                      <FavoriteBorderIcon className={styles.favoIcon}/>
+                      <ShareIcon className={styles.shareIcon}/>
 
-                  </p>
-                </div>
-              </Box>
-              <div className={styles.shadow} />
-              <div className={`${styles.shadow} ${styles.shadow2}`} />
-            </Card>
+                    </p>
+                  </div>
+                </Box>
+                <div className={styles.shadow} />
+                <div className={`${styles.shadow} ${styles.shadow2}`} />
+              </Card>
+            </Link>
 
           </Grid>
         ))}

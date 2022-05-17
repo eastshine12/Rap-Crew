@@ -5,7 +5,7 @@ export default function Layout({children}) {
   return (
     <>
       <Nav />
-      <div>
+      <div style={{backgroundColor: '#f1f1f1'}}>
         {children}
       </div>
       <Footer />

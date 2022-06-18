@@ -38,6 +38,7 @@ export default function index() {
             variant="h2"
             align="center"
             color="white"
+            fontWeight="400"
             gutterBottom
             fontFamily="-apple-system"
           >

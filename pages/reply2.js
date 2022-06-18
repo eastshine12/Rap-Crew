@@ -49,15 +49,10 @@ export default function reply2() {
             <MoreVertIcon />
           </IconButton>
         }
-        title="Shrimp and Chorizo Paella"
-        subheader="September 14, 2016"
+        title="nickname"
+        subheader="3분 전"
       />
 
-      <CardMedia
-        component="img"
-        height="194"
-        image="/images/user1.PNG"
-      />
 
       <CardContent>
         <Typography color="text.secondary">

@@ -8,6 +8,7 @@ import useScrollTrigger from '@mui/material/useScrollTrigger';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import Link from 'next/link';
+import { makeStyles } from '@mui/styles';
 
 function ElevationScroll(props) {
   const { children, window } = props;
@@ -49,17 +50,28 @@ const CustomButton = styled(Button)({
   color: '#ffffff6b',
 });
 
-
+const useStyles = makeStyles({
+  logo: {
+    width: 115,
+    height: 32,
+    margin: '10px 0px 0px 15px',
+    // backgroundColor: 'white'
+  },
+});
 
 export default function Nav(props) {
+
+  const styles = useStyles();
+
   return (
     <>
       <ElevationScroll {...props}>
         <AppBar style={navStyle}>
           <Toolbar>
-            <CameraIcon sx={{ mr: 2 }} />
+            {/* <CameraIcon sx={{ mr: 2 }} /> */}
             <Typography variant="h6" color="inherit" sx={{ flexGrow: 1 }} noWrap>
-              <Link href="/">Rap-Crew</Link>
+              {/* <Link href="/">Rap-Crew</Link> */}
+              <img src="/images/logo4.png" alt="logo" className={styles.logo} />
             </Typography>
             <CustomButton variant="outlined">로그인</CustomButton>
           </Toolbar>

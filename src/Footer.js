@@ -7,7 +7,7 @@ function Copyright() {
     <Typography variant="body2" color="text.secondary" align="center">
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
-        Your Website
+        Rap-Crew
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -21,7 +21,7 @@ export default function Footer() {
     {/* Footer */}
     <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
       <Typography variant="h6" align="center" gutterBottom>
-        Footer
+        Rap-Crew
       </Typography>
       <Typography
         variant="subtitle1"
@@ -29,7 +29,7 @@ export default function Footer() {
         color="text.secondary"
         component="p"
       >
-        Something here to give the footer a purpose!
+        Rap-Crew Entertainment
       </Typography>
       <Copyright />
     </Box>

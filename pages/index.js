@@ -45,7 +45,7 @@ export default function index() {
             지금 바로 시작하세요.
           </Typography>
           <Typography variant="h5" align="center" color="white" fontFamily="-apple-system" paragraph>
-            Hello.Hello.Hello.Hello.
+            국내 최고의 크루원들과 함께.
           </Typography>
           <Stack
             sx={{ pt: 4 }}

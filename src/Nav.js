@@ -55,9 +55,16 @@ const useStyles = makeStyles({
     width: 115,
     height: 32,
     margin: '10px 0px 0px 15px',
+    cursor: 'pointer',
     // backgroundColor: 'white'
   },
 });
+
+const goMain = function() {
+  location.href = "/";
+}
+
+
 
 export default function Nav(props) {
 
@@ -71,7 +78,7 @@ export default function Nav(props) {
             {/* <CameraIcon sx={{ mr: 2 }} /> */}
             <Typography variant="h6" color="inherit" sx={{ flexGrow: 1 }} noWrap>
               {/* <Link href="/">Rap-Crew</Link> */}
-              <img src="/images/logo4.png" alt="logo" className={styles.logo} />
+              <img src="/images/logo4.png" alt="logo" className={styles.logo} onClick={goMain} />
             </Typography>
             <CustomButton variant="outlined">로그인</CustomButton>
           </Toolbar>

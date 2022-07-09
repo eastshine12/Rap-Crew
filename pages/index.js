@@ -16,6 +16,10 @@ import CrewCards from '../src/CrewCards';
 
 const theme = createTheme();
 
+const cardCreate = function() {
+  location.href = 'card-add';
+}
+
 export default function index() {
   return (
     <> 
@@ -54,7 +58,7 @@ export default function index() {
             justifyContent="center"
           >
             <Button variant="contained" size="large">가입하기</Button>
-            <Button variant="outlined" size="large">모집하기</Button>
+            <Button variant="outlined" size="large" onClick={cardCreate}>모집하기</Button>
           </Stack>
         </Container>
       </Box>

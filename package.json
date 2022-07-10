@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 8081",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -16,11 +16,13 @@
     "@mui/icons-material": "^5.6.2",
     "@mui/material": "^5.7.0",
     "@mui/styles": "^5.7.0",
+    "axios": "^0.27.2",
     "babel-plugin-styled-components": "^2.0.7",
     "next": "12.1.6",
     "notistack": "^2.0.5",
     "react": "18.1.0",
-    "react-dom": "18.1.0"
+    "react-dom": "18.1.0",
+    "react-query": "^3.39.1"
   },
   "devDependencies": {
     "eslint": "8.15.0",

@@ -30,7 +30,7 @@ const useStyles = makeStyles({
       height: '100%',
     },
   },
-  soundCloud: {
+  thumbnail: {
     width: '100%',
     borderRadius: 10,
   },
@@ -96,7 +96,7 @@ export default function card_view() {
           <Grid container spacing={2} sx = {{ padding: '2em'}}>
 
             <Grid item xs={12} sm={12} md={7} sx={{ bgcolor: 'none', padding: '1em' }}>
-              <img className={styles.soundCloud} src='/images/card-default.png' />
+              <img className={styles.thumbnail} src='/images/card-default.png' />
             </Grid>
 
             <Grid container item md={5}>

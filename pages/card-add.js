@@ -6,6 +6,7 @@ import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import { makeStyles } from '@mui/styles';
 import TextField from '@mui/material/TextField';
+import { useRef, useState } from 'react';
 
 import { dehydrate, QueryClient, useQuery } from "react-query";
 import { fetchCards } from "./api/getCard";
@@ -29,6 +30,7 @@ const useStyles = makeStyles({
 })
 
 
+
 // 리액트 쿼리 수정
 /*
 export async function getServerSideProps() {
@@ -45,7 +47,8 @@ export async function getServerSideProps() {
 */
 
 export default function card_add() {
-
+    
+  /*
     const { isLoading, error, data } = useQuery('testApi', () =>
       getFeeds(),
       {
@@ -54,7 +57,40 @@ export default function card_add() {
         refetchOnWindowFocus: false,
       }
     );
+    */
 
+    const titleInputRef = useRef();
+    const contentInputRef = useRef();
+
+    const submitCardHandler = (e) => {
+      e.preventDefault();
+      console.log('hi')
+    
+      const title = titleInputRef.current.value;
+      const content = contentInputRef.current.value;
+      console.log(`title : ${title}`);
+      console.log(`content : ${content}`);
+    
+      const req = {
+        userNo: 1,
+        title,
+        content,
+      }
+
+      // 22.07.30 MUI TextField 에 ref 지정 방법 찾아보기
+
+      /*
+      fetch('/api/addCard', {
+        method: 'POST',
+        body: JSON.stringify(req),
+        headers: {
+          'Content-type': 'application/json'
+        },
+      }).then(res => res.json())
+        .then(data => console.log(data));
+      */
+    }
+    
     const styles = useStyles();
 
     return (
@@ -69,7 +105,7 @@ export default function card_add() {
                       maxWidth: '100%',
                     }}
                   >
-                    <TextField fullWidth label="제목을 입력하세요." id="fullWidth" />
+                    <TextField fullWidth label="제목을 입력하세요." id="fullWidth" ref={titleInputRef} />
                   </Box>
                 </Grid>
 
@@ -86,6 +122,7 @@ export default function card_add() {
                       label="내용을 입력하세요." 
                       id="fullWidth"
                       rows={16}
+                      ref={contentInputRef}
                     />
                   </Box>
                 </Grid>
@@ -97,7 +134,7 @@ export default function card_add() {
                       maxWidth: '100%',
                     }}
                   >
-                    <Button variant="contained" size="large">
+                    <Button variant="contained" size="large" onClick={submitCardHandler}>
                       등록하기
                     </Button>
                   </Box>

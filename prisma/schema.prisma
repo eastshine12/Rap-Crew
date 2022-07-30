@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model tb_card {
+  cardId     BigInt     @id @default(autoincrement())
+  userNo     BigInt
+  title      String     @db.VarChar(256)
+  content    String?    @db.Text
+  createAt   DateTime   @default(now()) @db.Timestamp(0)
+  updateAt   DateTime   @default(now()) @db.Timestamp(0)
+  valid      Boolean    @default(true)
+  recruitAt  DateTime?  @db.Timestamp(0)
+  recruitNum Int?
+  tb_user    tb_user    @relation(fields: [userNo], references: [userNo], onDelete: NoAction, onUpdate: NoAction, map: "tb_card_FK")
+  tb_like    tb_like[]
+  tb_reply   tb_reply[]
+
+  @@index([userNo], map: "tb_card_FK")
+}
+
+model tb_like {
+  likeId   BigInt    @id @default(autoincrement())
+  likeType Int       @default(0)
+  userNo   BigInt
+  cardId   BigInt?
+  replyId  BigInt?
+  valid    Boolean   @default(true)
+  tb_user  tb_user   @relation(fields: [userNo], references: [userNo], onDelete: NoAction, onUpdate: NoAction, map: "tb_like_FK")
+  tb_card  tb_card?  @relation(fields: [cardId], references: [cardId], onDelete: NoAction, onUpdate: NoAction, map: "tb_like_FK_1")
+  tb_reply tb_reply? @relation(fields: [replyId], references: [replyId], onDelete: NoAction, onUpdate: NoAction, map: "tb_like_FK_2")
+
+  @@index([userNo], map: "tb_like_FK")
+  @@index([cardId], map: "tb_like_FK_1")
+  @@index([replyId], map: "tb_like_FK_2")
+}
+
+model tb_reply {
+  replyId  BigInt    @id @default(autoincrement())
+  cardId   BigInt
+  userNo   BigInt
+  content  String    @db.Text
+  parentId BigInt?
+  valid    Boolean   @default(true)
+  createAt DateTime  @default(now()) @db.Timestamp(0)
+  updateAt DateTime  @default(now()) @db.Timestamp(0)
+  tb_card  tb_card   @relation(fields: [cardId], references: [cardId], onDelete: NoAction, onUpdate: NoAction, map: "tb_reply_FK")
+  tb_user  tb_user   @relation(fields: [userNo], references: [userNo], onDelete: NoAction, onUpdate: NoAction, map: "tb_reply_FK_1")
+  tb_like  tb_like[]
+
+  @@index([cardId], map: "tb_reply_FK")
+  @@index([userNo], map: "tb_reply_FK_1")
+}
+
+model tb_user {
+  userNo   BigInt     @id @default(autoincrement())
+  userId   String     @db.VarChar(64)
+  password String     @db.VarChar(64)
+  status   Int        @default(1)
+  createAt DateTime   @default(now()) @db.Timestamp(0)
+  updateAt DateTime   @default(now()) @db.Timestamp(0)
+  tb_card  tb_card[]
+  tb_like  tb_like[]
+  tb_reply tb_reply[]
+}

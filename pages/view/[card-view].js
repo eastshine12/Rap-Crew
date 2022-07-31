@@ -145,7 +145,7 @@ export default function card_view() {
                 padding: '0 1em 1em 0'
                 }}
               >
-                <iframe width="100%" height="140" scrolling="no" frameborder="no" allow="autoplay" 
+                <iframe width="100%" height="140" scrolling="no" frameBorder="no" allow="autoplay" 
                   src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/671765165&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true">
                 </iframe>
               </Grid>

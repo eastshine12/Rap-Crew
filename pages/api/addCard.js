@@ -10,26 +10,26 @@ export default async function handler(req, res) {
 
   const prisma = new PrismaClient();
 
-  const card = {
-    userNo: 1,
-    title: "제목3",
-    content: "내용3",
-  }
+  // const card = {
+  //   userNo: 1,
+  //   title: "제목3",
+  //   content: "내용3",
+  // }
+  
+  try {
+    if(req.method === 'POST') {
 
-  if(req.method === 'POST') {
-
-    const cards =  await prisma.tb_card.create({
-      data: card
-    })
-
-    if(cards) {
-      return res.send("Card Created!");
-    } else {
-      return res.send("Card not Created.");
+      const cards =  await prisma.tb_card.create({
+        data: req.body
+      })
+  
+      if(cards) {
+        return res.send("OK");
+      }
     }
-
-  } else {
-    return res.send("");
+  } catch(e) {
+    console.log(e);
+    return res.send("NOK");
   }
 
 }

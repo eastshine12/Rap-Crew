@@ -6,7 +6,10 @@ import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import { makeStyles } from '@mui/styles';
 import TextField from '@mui/material/TextField';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
+import axios from "axios";
+import { useRouter } from 'next/router'
+
 
 import { dehydrate, QueryClient, useQuery } from "react-query";
 import { fetchCards } from "./api/getCard";
@@ -59,37 +62,51 @@ export default function card_add() {
     );
     */
 
-    const titleInputRef = useRef();
-    const contentInputRef = useRef();
+    const [card, setCard] = useState ({
+      title: '',
+      content: '',
+    });
+
+    const onChangeText = (e) => {
+      setCard({
+        ...card,
+        [e.target.name] : e.target.value,
+      });
+    };
 
     const submitCardHandler = (e) => {
       e.preventDefault();
       console.log('hi')
     
-      const title = titleInputRef.current.value;
-      const content = contentInputRef.current.value;
-      console.log(`title : ${title}`);
-      console.log(`content : ${content}`);
+      console.log(`title : ${card.title}`);
+      console.log(`content : ${card.content}`);
     
-      const req = {
+      const reqData = {
         userNo: 1,
-        title,
-        content,
+        title: card.title,
+        content: card.content,
       }
-
-      // 22.07.30 MUI TextField 에 ref 지정 방법 찾아보기
-
-      /*
-      fetch('/api/addCard', {
-        method: 'POST',
-        body: JSON.stringify(req),
+      
+      axios.post('/api/addCard', reqData, {
         headers: {
           'Content-type': 'application/json'
         },
-      }).then(res => res.json())
-        .then(data => console.log(data));
-      */
+      })
+      .then(res => resultHandler(res));
+
     }
+
+    const router = useRouter();
+    const resultHandler = (res) => {
+      if(res.data === 'OK') {
+        alert('게시글이 등록되었습니다.');
+        router.push('/');
+      } else {
+        alert('게시글 작성에 실패했습니다.')
+      }
+    };
+
+
     
     const styles = useStyles();
 
@@ -105,7 +122,7 @@ export default function card_add() {
                       maxWidth: '100%',
                     }}
                   >
-                    <TextField fullWidth label="제목을 입력하세요." id="fullWidth" ref={titleInputRef} />
+                    <TextField fullWidth label="제목을 입력하세요." id="fullWidth" name="title" onChange={onChangeText} />
                   </Box>
                 </Grid>
 
@@ -122,7 +139,8 @@ export default function card_add() {
                       label="내용을 입력하세요." 
                       id="fullWidth"
                       rows={16}
-                      ref={contentInputRef}
+                      name="content"
+                      onChange={onChangeText}
                     />
                   </Box>
                 </Grid>

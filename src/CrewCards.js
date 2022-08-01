@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
@@ -14,9 +14,10 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ShareIcon from '@mui/icons-material/Share';
 import { red } from '@mui/material/colors';
 import Link from 'next/link';
+import axios from 'axios';
 
 
-const cards = [
+const testCards = [
   {
     boardNo : 1,
     title: '제 비트에 같이 작업하실분! 피쳐링 필요하신분',
@@ -169,21 +170,33 @@ const useStyles = makeStyles({
 
 
 
+
 export default function CrewCards() {
+  
+
   const styles = useStyles();
   // const mediaStyles = useCoverCardMediaStyles();
+  const [cards, setCards] = useState([]);
+
+  useEffect(() => {
+    axios.get('api/getAllCards')
+    .then(res => {
+      setCards(res.data);
+    })
+  }, []);
+
 
   return (
     <Container sx={{ py: 8 }}>
       <Grid container spacing={8}>
         {cards.map((card) => (
-          <Grid item key={card.boardNo} xs={12} sm={6} md={4}>
+          <Grid item key={card.cardId} xs={12} sm={6} md={4}>
 
-            <Link href={`./view/${card.boardNo}`}>
+            <Link href={`./view/${card.cardId}`}>
               <Card className={styles.card}>
                 <Box className={styles.main} minHeight={300} position={'relative'}>
                   <CardMedia
-                    image={card.boardImgUrl}
+                    image="images/card-default.png"
                     component="img"
                     height="300"
                   />
@@ -206,17 +219,17 @@ export default function CrewCards() {
                   <div>
                     <Avatar
                       className={styles.avatar}
-                      src={card.userImgUrl}
+                      src={`images/user3.PNG`}
                     ></Avatar>
                     {/* <AccountCircleRoundedIcon 
                       color='action'
                       sx={{ fontSize: 50 }}
                     /> */}
-                    <span className={styles.userId}>{card.userId}</span>
+                    <span className={styles.userId}>{``}</span>
                   </div>
                   <div>
                     
-                    <p>2022.05.16
+                    <p>{card.createAt.substring(0, 10).replaceAll('-','.')}
                       <FavoriteBorderIcon className={styles.favoIcon}/>
                       <ShareIcon className={styles.shareIcon}/>
 

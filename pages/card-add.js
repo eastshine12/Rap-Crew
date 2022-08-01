@@ -76,8 +76,7 @@ export default function card_add() {
 
     const submitCardHandler = (e) => {
       e.preventDefault();
-      console.log('hi')
-    
+
       console.log(`title : ${card.title}`);
       console.log(`content : ${card.content}`);
     

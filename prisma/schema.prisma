@@ -1,3 +1,20 @@
+
+// 마이그레이션 파일 만들기
+// npx prisma migrate dev --name 파일이름 --create-only
+
+// 마이그레이션 파일 DB 적용
+// npx prisma migrate dev
+
+// DB에서 수정사항을 스키마에 반영
+// npx prisma db pull
+
+// 마이그레이션 파일에 저장하기
+// npx prisma migrate dev --name 마이그레이션
+
+// DB 데이터를 유지하면서, schema 수정사항 적용하기
+// npx prisma db push
+
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -58,13 +75,15 @@ model tb_reply {
 }
 
 model tb_user {
-  userNo   BigInt     @id @default(autoincrement())
-  userId   String     @db.VarChar(64)
-  password String     @db.VarChar(64)
-  status   Int        @default(1)
-  createAt DateTime   @default(now()) @db.Timestamp(0)
-  updateAt DateTime   @default(now()) @db.Timestamp(0)
-  tb_card  tb_card[]
-  tb_like  tb_like[]
-  tb_reply tb_reply[]
+  userNo    BigInt     @id @default(autoincrement())
+  userId    String     @db.VarChar(64)
+  password  String     @db.VarChar(64)
+  email     String     @db.VarChar(128)
+  agreement Boolean    
+  status    Int        @default(1)
+  createAt  DateTime   @default(now()) @db.Timestamp(0)
+  updateAt  DateTime   @default(now()) @db.Timestamp(0)
+  tb_card   tb_card[]
+  tb_like   tb_like[]
+  tb_reply  tb_reply[]
 }

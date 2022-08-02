@@ -196,7 +196,7 @@ export default function CrewCards() {
               <Card className={styles.card}>
                 <Box className={styles.main} minHeight={300} position={'relative'}>
                   <CardMedia
-                    image="images/card-default.png"
+                    image={`images/card${Math.floor(Math.random() * 8) + 1}.PNG`}
                     component="img"
                     height="300"
                   />

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
@@ -13,6 +13,8 @@ import Reply from '../../src/reply';
 import Button from '@mui/material/Button';
 import { border, padding } from '@mui/system';
 import { useSnackbar } from 'notistack';
+import axios from 'axios';
+import { useRouter } from 'next/router';
 
 
 const useStyles = makeStyles({
@@ -81,12 +83,27 @@ const useStyles = makeStyles({
 export default function card_view() {
   
   const styles = useStyles();
-
+  const router = useRouter();
+  const { cardId } = router.query;
+  // let randomNum = 0;
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const handleClick = (variant) => () => {
       enqueueSnackbar('참여 요청이 완료되었습니다.', {variant});
   };
+
+  const [cardData, setCardData] = useState([]);
+
+  useEffect(() => {
+    if(!router.isReady) return;
+    // randomNum = Math.floor(Math.random() * 8) + 1;
+    axios.get(`/api/getCard/${cardId}`)
+    .then(res => {
+      console.log(res.data[0]);
+      setCardData(res.data[0]);
+    })
+  }, []);
+
 
 
   return (
@@ -96,7 +113,7 @@ export default function card_view() {
           <Grid container spacing={2} sx = {{ padding: '2em'}}>
 
             <Grid item xs={12} sm={12} md={7} sx={{ bgcolor: 'none', padding: '1em' }}>
-              <img className={styles.thumbnail} src='/images/card-default.png' />
+              <img className={styles.thumbnail} src={`/images/card1.PNG`} />
             </Grid>
 
             <Grid container item md={5}>
@@ -111,7 +128,7 @@ export default function card_view() {
                   fontWeight: 700
                 }}
                 >
-                제 비트에 같이 작업하실분! 피쳐링 필요하신분
+                {cardData.title}
                 </Typography>
               </Grid>
 
@@ -173,7 +190,7 @@ export default function card_view() {
                     fontSize: 16,
                   }}
                 >
-                같이 작업하시거나 피쳐링 필요하신분들 편하게 연락주세요 붐뱁 트랩 싱잉 다 합니다!
+                {cardData.content}
                 </Typography>
               </Box>
             </Grid>

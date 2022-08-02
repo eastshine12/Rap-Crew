@@ -9,6 +9,7 @@ import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import Link from 'next/link';
 import { makeStyles } from '@mui/styles';
+import { useRouter } from 'next/router';
 
 function ElevationScroll(props) {
   const { children, window } = props;
@@ -60,15 +61,19 @@ const useStyles = makeStyles({
   },
 });
 
-const goMain = function() {
-  location.href = "/";
-}
-
-
 
 export default function Nav(props) {
 
   const styles = useStyles();
+  const router = useRouter();
+
+  const goMain = function() {
+    router.push("/");
+  }
+
+  const goLogin = () => {
+    router.push('/login');
+  }
 
   return (
     <>
@@ -80,7 +85,7 @@ export default function Nav(props) {
               {/* <Link href="/">Rap-Crew</Link> */}
               <img src="/images/logo4.png" alt="logo" className={styles.logo} onClick={goMain} />
             </Typography>
-            <CustomButton variant="outlined">로그인</CustomButton>
+            <CustomButton variant="outlined" onClick={goLogin}>로그인</CustomButton>
           </Toolbar>
           
         </AppBar>

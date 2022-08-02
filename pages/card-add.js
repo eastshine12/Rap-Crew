@@ -8,12 +8,10 @@ import { makeStyles } from '@mui/styles';
 import TextField from '@mui/material/TextField';
 import { useState } from 'react';
 import axios from "axios";
-import { useRouter } from 'next/router'
-
+import { useRouter } from 'next/router';
 
 import { dehydrate, QueryClient, useQuery } from "react-query";
-import { fetchCards } from "./api/getCard";
-import { getFeeds } from './api/testApi';
+
 
 const useStyles = makeStyles({
   container: {

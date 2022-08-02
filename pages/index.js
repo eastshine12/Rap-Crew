@@ -3,7 +3,6 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 
-
 import CssBaseline from '@mui/material/CssBaseline';
 
 import Stack from '@mui/material/Stack';
@@ -13,14 +12,23 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import CrewCards from '../src/CrewCards';
+import { useRouter } from 'next/router';
 
 const theme = createTheme();
 
-const cardCreate = function() {
-  location.href = 'card-add';
-}
-
 export default function index() {
+
+  const router = useRouter();
+
+  const routeSignUp = function() {
+    router.push('/signup');
+  }
+
+  const routeCardCreate = function() {
+    router.push('/card-add');
+  }
+
+
   return (
     <> 
       <Box
@@ -57,8 +65,8 @@ export default function index() {
             spacing={2}
             justifyContent="center"
           >
-            <Button variant="contained" size="large">가입하기</Button>
-            <Button variant="outlined" size="large" onClick={cardCreate}>모집하기</Button>
+            <Button variant="contained" size="large" onClick={routeSignUp}>가입하기</Button>
+            <Button variant="outlined" size="large" onClick={routeCardCreate}>모집하기</Button>
           </Stack>
         </Container>
       </Box>

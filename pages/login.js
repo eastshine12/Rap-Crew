@@ -46,6 +46,10 @@ const useStyles = makeStyles({
     display: 'flex',
     flexWrap: 'wrap',
   },
+  logoImg: {
+    width: 80,
+    height: 80,
+  },
 })
 
 
@@ -132,8 +136,12 @@ export default function login() {
                       alignItems: 'center',
                     }}
                   >
-                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                      <LockOutlinedIcon />
+                    <Avatar sx={{ 
+                      width: 80,
+                      height: 80, 
+                      m:2,
+                    }}>
+                      <img className={styles.logoImg} src={'/images/logo2.png'} />
                     </Avatar>
                     <Typography component="h1" variant="h5">
                       로그인

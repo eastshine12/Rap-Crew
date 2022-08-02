@@ -25,10 +25,10 @@ export default async function handler(req, res) {
     if(users.length > 0) {
       return res.send(users);
     } else {
-      return res.send("users not exist");
+      return res.send("NOK");
     }
   } else {
-    return res.send("");
+    return res.send("NOK");
   }
 
 }

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import Card from '@mui/material/Card';
 import { makeStyles } from '@mui/styles';
 import { useState } from 'react';
@@ -19,6 +19,10 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Modal from '@mui/material/Modal';
+
+import Stack from '@mui/material/Stack';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 
 const theme = createTheme();
@@ -46,75 +50,118 @@ const useStyles = makeStyles({
     display: 'flex',
     flexWrap: 'wrap',
   },
+  logoImg: {
+    width: 80,
+    height: 80,
+  },
 })
 
 
 const 이용약관 = "제 1조 목적\n본 약관은 Rap-Crew(이하 \"회사\")에서 운영하는 커뮤니티 서비스를 이용함에 있어 회사와 커뮤니티 서비스를 이용하는 커뮤니티 구성원 사이에 커뮤니티 개설 및 운영에 관한 권리, 의무 및 책임사항을 규정함을 목적으로 합니다.\n제 2조 용어의 정의\n본 약관에서 사용되는 주요한 용어는 다음과 같습니다."
 
 
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
+
 export default function signup() {
-    
+        
+    const styles = useStyles();
+
+
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-    const [card, setCard] = useState ({
-      title: '',
-      content: '',
+    const [user, setUser] = useState ({
+      userId: '',
+      password: '',
+      password2: '',
+      email: '',
+      agreeChk: false,
     });
 
     const onChangeText = (e) => {
-      setCard({
-        ...card,
+      setUser({
+        ...user,
         [e.target.name] : e.target.value,
       });
     };
 
-    const submitCardHandler = (e) => {
-      e.preventDefault();
-
-      console.log(`title : ${card.title}`);
-      console.log(`content : ${card.content}`);
-    
-      const reqData = {
-        userNo: 1,
-        title: card.title,
-        content: card.content,
-      }
-      
-      axios.post('/api/addCard', reqData, {
-        headers: {
-          'Content-type': 'application/json'
-        },
-      })
-      .then(res => resultHandler(res));
-
-    }
-
-
-    const handleSubmit = (event) => {
-      event.preventDefault();
-      const data = new FormData(event.currentTarget);
-      console.log({
-        email: data.get('email'),
-        password: data.get('password'),
+    const onChangeValue = (e) => {
+      setUser({
+        ...user,
+        [e.target.name] : e.target.checked,
       });
     };
 
 
-    const router = useRouter();
-    const resultHandler = (res) => {
-      if(res.data === 'OK') {
-        alert('게시글이 등록되었습니다.');
-        router.push('/');
+    const [confirm, setConfirm] = React.useState({
+      state: false,
+      msg: '',
+    });
+
+    const handleClickSnackbar = (msg) => {
+      setConfirm({
+        state: true,
+        msg,
+      });
+    };
+  
+    const handleCloseSnackbar = (event, reason) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+  
+      setConfirm({
+        state: false,
+        msg: '',
+      });
+    };
+
+    const submitUserHandler = (e) => {
+      e.preventDefault();
+
+      if(!user.userId) {
+        handleClickSnackbar('아이디를 입력해주세요.');
+      } else if(!(user.password && user.password2)) {
+        handleClickSnackbar('비밀번호를 입력해주세요.');
+      } else if(user.password !== user.password2) {
+        handleClickSnackbar('입력한 비밀번호가 서로 다릅니다. 다시 확인해주세요.');
+      }else if(!user.email) {
+        handleClickSnackbar('이메일을 입력해주세요.');
+      } else if(!user.agreeChk) {
+        handleClickSnackbar('필수항목에 체크해주세요.');
       } else {
-        alert('게시글 작성에 실패했습니다.')
+        
+        const reqData = {
+          userId: user.userId,
+          password: user.password,
+          email: user.email,
+          agreement: user.agreeChk,
+        }
+        
+        axios.post('/api/addUser', reqData, {
+          headers: {
+            'Content-type': 'application/json'
+          },
+        })
+        .then(res => resultHandler(res));
+        
       }
     };
 
+    const router = useRouter();
+    const resultHandler = (res) => {
+      if(res.data === 'OK') {
+        alert('회원가입이 완료되었습니다.');
+        router.push('/login');
+      } else {
+        alert('회원가입에 실패했습니다.')
+      }
+    };
 
-    
-    const styles = useStyles();
 
     return (
         <Container className={styles.container}>
@@ -135,13 +182,17 @@ export default function signup() {
                       alignItems: 'center',
                     }}
                   >
-                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                      <LockOutlinedIcon />
+                    <Avatar sx={{ 
+                      width: 80,
+                      height: 80, 
+                      m:2,
+                    }}>
+                      <img className={styles.logoImg} src={'/images/logo2.png'} />
                     </Avatar>
                     <Typography component="h1" variant="h5">
                       회원가입
                     </Typography>
-                    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+                    <Box sx={{ mt: 3 }}>
                       <Grid container spacing={2}>
                         <Grid item xs={12}>
                           <TextField
@@ -152,28 +203,31 @@ export default function signup() {
                             id="userId"
                             label="아이디"
                             autoFocus
+                            onChange={onChangeText}
                           />
                         </Grid>
                         <Grid item xs={12}>
                           <TextField
                             required
                             fullWidth
-                            id="userPwd"
+                            id="password"
                             label="비밀번호"
-                            name="userPwd"
+                            name="password"
                             type="password"
                             autoComplete="new-password"
+                            onChange={onChangeText}
                           />
                         </Grid>
                         <Grid item xs={12}>
                           <TextField
                             required
                             fullWidth
-                            id="userPwd"
+                            id="password2"
                             label="비밀번호 확인"
-                            name="userPwdConfirm"
+                            name="password2"
                             type="password"
                             autoComplete="new-password"
+                            onChange={onChangeText}
                           />
                         </Grid>
                         <Grid item xs={12}>
@@ -184,11 +238,12 @@ export default function signup() {
                             label="이메일"
                             id="email"
                             autoComplete="email"
+                            onChange={onChangeText}
                           />
                         </Grid>
                         <Grid item xs={12}>
                           <FormControlLabel
-                            control={<Checkbox value="allowService" color="primary" />}
+                            control={<Checkbox value="allowService" color="primary" name="agreeChk" onChange={onChangeValue}/>}
                             label="[필수] 서비스 이용 정책에 대한 동의"
                           />
                           <Button onClick={handleOpen}>자세히 보기</Button>
@@ -214,6 +269,7 @@ export default function signup() {
                         fullWidth
                         variant="contained"
                         sx={{ mt: 3, mb: 2 }}
+                        onClick={submitUserHandler}
                       >
                         회원가입하기
                       </Button>
@@ -224,6 +280,11 @@ export default function signup() {
               </ThemeProvider>
             </Card>
           </Box>
+          <Snackbar open={confirm.state} autoHideDuration={3000} onClose={handleCloseSnackbar}>
+            <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
+              {confirm.msg}
+            </Alert>
+          </Snackbar>
         </Container>
     )
 }

@@ -85,7 +85,7 @@ export default function card_view() {
   const styles = useStyles();
   const router = useRouter();
   const { cardId } = router.query;
-  // let randomNum = 0;
+  
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const handleClick = (variant) => () => {
@@ -96,7 +96,6 @@ export default function card_view() {
 
   useEffect(() => {
     if(!router.isReady) return;
-    // randomNum = Math.floor(Math.random() * 8) + 1;
     axios.get(`/api/getCard/${cardId}`)
     .then(res => {
       console.log(res.data[0]);

@@ -189,7 +189,8 @@ export default function CrewCards() {
   return (
     <Container sx={{ py: 8 }}>
       <Grid container spacing={8}>
-        {cards.map((card) => (
+        {console.log(cards.length)}
+        {cards!=='NOK'?cards.map((card) => (
           <Grid item key={card.cardId} xs={12} sm={6} md={4}>
 
             <Link href={`./view/${card.cardId}`}>
@@ -225,7 +226,7 @@ export default function CrewCards() {
                       color='action'
                       sx={{ fontSize: 50 }}
                     /> */}
-                    <span className={styles.userId}>{``}</span>
+                    <span className={styles.userId}>{card.tb_user.userId}</span>
                   </div>
                   <div>
                     
@@ -242,7 +243,7 @@ export default function CrewCards() {
             </Link>
 
           </Grid>
-        ))}
+        )):<p>게시글이 없습니다.</p>}
       </Grid>
     </Container>
   )

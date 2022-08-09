@@ -110,6 +110,7 @@ export default function Nav(props) {
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
+    handleMobileMenuClose();
   };
 
   const handleMobileMenuClose = () => {

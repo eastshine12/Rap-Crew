@@ -12,6 +12,7 @@ import { SnackbarProvider } from 'notistack';
 
 import { Hydrate, QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from "react-query/devtools";
+import { SessionProvider } from "next-auth/react"
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -22,25 +23,27 @@ export default function MyApp(props) {
   const [queryClient] = React.useState(() => new QueryClient())
 
   return (
-    <CacheProvider value={emotionCache}>
-      <QueryClientProvider client={queryClient}>
-        <Hydrate state={pageProps.dehydratedState}>
-          <Head>
-            <meta name="viewport" content="initial-scale=1, width=device-width" />
-          </Head>
-          <ThemeProvider theme={theme}>
-            <SnackbarProvider maxSnack={3}>
-              {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-              <CssBaseline />
-              <Layout>
-                <Component {...pageProps} />
-              </Layout>
-            </SnackbarProvider>
-          </ThemeProvider>
-        </Hydrate>
-        <ReactQueryDevtools />  
-      </QueryClientProvider>
-    </CacheProvider>
+    <SessionProvider>
+      <CacheProvider value={emotionCache}>
+        <QueryClientProvider client={queryClient}>
+          <Hydrate state={pageProps.dehydratedState}>
+            <Head>
+              <meta name="viewport" content="initial-scale=1, width=device-width" />
+            </Head>
+            <ThemeProvider theme={theme}>
+              <SnackbarProvider maxSnack={3}>
+                {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+                <CssBaseline />
+                <Layout>
+                  <Component {...pageProps} />
+                </Layout>
+              </SnackbarProvider>
+            </ThemeProvider>
+          </Hydrate>
+          {/* <ReactQueryDevtools />   */}
+        </QueryClientProvider>
+      </CacheProvider>
+    </SessionProvider>
   );
 }
 

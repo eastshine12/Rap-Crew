@@ -4,6 +4,7 @@ import { makeStyles } from '@mui/styles';
 import { useState } from 'react';
 import axios from "axios";
 import { useRouter } from 'next/router'
+import { useSession, signIn } from "next-auth/react";
 
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -58,64 +59,49 @@ export default function login() {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    const router = useRouter();
+    const { data: session, status } = useSession();
+    const styles = useStyles();
 
-    const [card, setCard] = useState ({
-      title: '',
-      content: '',
+    const [user, setUser] = useState ({
+      userId: '',
+      password: '',
     });
 
     const onChangeText = (e) => {
-      setCard({
-        ...card,
+      setUser({
+        ...user,
         [e.target.name] : e.target.value,
       });
     };
 
-    const submitCardHandler = (e) => {
+    const submitUserHandler = async (e) => {
       e.preventDefault();
 
-      console.log(`title : ${card.title}`);
-      console.log(`content : ${card.content}`);
+      console.log(`user : ${JSON.stringify(user)}`);
     
       const reqData = {
-        userNo: 1,
-        title: card.title,
-        content: card.content,
-      }
+        redirect : false,
+        userId: user.userId,
+        password: user.password,
+      };
       
-      axios.post('/api/addCard', reqData, {
-        headers: {
-          'Content-type': 'application/json'
-        },
-      })
-      .then(res => resultHandler(res));
+      const result = await signIn("credentials", reqData);
+      if (!result.error) {
+        router.replace("/");
+      };
+    };
 
+    if (status === "authenticated") {
+      router.replace("/");
+      return (
+        <div>
+          <h1>Log in</h1>
+          <div>You are already logged in.</div>
+          <div>Now redirect to main page.</div>
+        </div>
+      );
     }
-
-
-    const handleSubmit = (event) => {
-      event.preventDefault();
-      const data = new FormData(event.currentTarget);
-      console.log({
-        email: data.get('email'),
-        password: data.get('password'),
-      });
-    };
-
-
-    const router = useRouter();
-    const resultHandler = (res) => {
-      if(res.data === 'OK') {
-        alert('게시글이 등록되었습니다.');
-        router.push('/');
-      } else {
-        alert('게시글 작성에 실패했습니다.')
-      }
-    };
-
-
-    
-    const styles = useStyles();
 
     return (
         <Container className={styles.container}>
@@ -146,7 +132,7 @@ export default function login() {
                     <Typography component="h1" variant="h5">
                       로그인
                     </Typography>
-                    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+                    <Box component="form" noValidate onSubmit={submitUserHandler} sx={{ mt: 3 }}>
                       <Grid container spacing={2}>
                         <Grid item xs={12}>
                           <TextField
@@ -157,6 +143,7 @@ export default function login() {
                             id="userId"
                             label="아이디"
                             autoFocus
+                            onChange={onChangeText}
                           />
                         </Grid>
                         <Grid item xs={12}>
@@ -165,9 +152,10 @@ export default function login() {
                             fullWidth
                             id="userPwd"
                             label="비밀번호"
-                            name="userPwd"
+                            name="password"
                             type="password"
                             autoComplete="new-password"
+                            onChange={onChangeText}
                           />
                         </Grid>
                         

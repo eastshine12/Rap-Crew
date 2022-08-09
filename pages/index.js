@@ -10,24 +10,32 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useSession, signIn } from "next-auth/react";
 
 import CrewCards from '../src/CrewCards';
 import { useRouter } from 'next/router';
 
-const theme = createTheme();
+
 
 export default function index() {
 
   const router = useRouter();
+  const { data: session, status } = useSession();
+  const theme = createTheme();
 
   const routeSignUp = function() {
     router.push('/signup');
   }
 
   const routeCardCreate = function() {
-    router.push('/card-add');
+    if(status !== "authenticated") {
+      if (confirm("로그인이 필요한 서비스입니다. 로그인 화면으로 이동합니다.")) {
+        router.push('/login');
+      }
+    } else {
+      router.push('/card-add');
+    }
   }
-
 
   return (
     <> 

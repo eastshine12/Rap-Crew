@@ -13,6 +13,19 @@ export default async function handler(req, res) {
   try {
     if(req.method === 'POST') {
 
+      const userChk = await prisma.tb_user.findMany({
+        where: {
+          userId: req.body.userId,
+        },
+        select: {
+          userId: true,
+        }
+      })
+      
+      if(userChk.length > 0) {
+        return res.send("EXIST");
+      }
+
       const user =  await prisma.tb_user.create({
         data: req.body
       })

@@ -3,7 +3,8 @@ import Card from '@mui/material/Card';
 import { makeStyles } from '@mui/styles';
 import { useState } from 'react';
 import axios from "axios";
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
+import { useSession, signIn } from "next-auth/react";
 
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -68,7 +69,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 export default function signup() {
         
     const styles = useStyles();
-
+    const { data: session, status } = useSession();
 
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
@@ -148,20 +149,34 @@ export default function signup() {
           },
         })
         .then(res => resultHandler(res));
-        
       }
     };
 
     const router = useRouter();
     const resultHandler = (res) => {
-      if(res.data === 'OK') {
+      console.log(res.data);
+      if(res.data === 'EXIST') {
+        alert("이미 존재하는 ID입니다.");
+      } else if(res.data === 'OK') {
         alert('회원가입이 완료되었습니다.');
         router.push('/login');
       } else {
         alert('회원가입에 실패했습니다.')
-      }
+      };
+      
+      
     };
 
+    if (status === "authenticated") {
+      router.replace("/");
+      return (
+        <div>
+          <h1>Sign up</h1>
+          <div>You are already logged in.</div>
+          <div>Now redirect to main page.</div>
+        </div>
+      );
+    }
 
     return (
         <Container className={styles.container}>

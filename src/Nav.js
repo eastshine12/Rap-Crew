@@ -2,7 +2,6 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import CameraIcon from '@mui/icons-material/PhotoCamera';
 import Typography from '@mui/material/Typography';
 import useScrollTrigger from '@mui/material/useScrollTrigger';
 import Button from '@mui/material/Button';
@@ -10,6 +9,8 @@ import { styled } from '@mui/material/styles';
 import Link from 'next/link';
 import { makeStyles } from '@mui/styles';
 import { useRouter } from 'next/router';
+import { signOut, useSession } from "next-auth/react";
+
 
 function ElevationScroll(props) {
   const { children, window } = props;
@@ -66,6 +67,8 @@ export default function Nav(props) {
 
   const styles = useStyles();
   const router = useRouter();
+  const { data: session, status } = useSession();
+  if (status === "authenticated") console.log("session", session);
 
   const goMain = function() {
     router.push("/");
@@ -73,6 +76,10 @@ export default function Nav(props) {
 
   const goLogin = () => {
     router.push('/login');
+  }
+
+  const logout = () => {
+    signOut();
   }
 
   return (
@@ -85,7 +92,8 @@ export default function Nav(props) {
               {/* <Link href="/">Rap-Crew</Link> */}
               <img src="/images/logo4.png" alt="logo" className={styles.logo} onClick={goMain} />
             </Typography>
-            <CustomButton variant="outlined" onClick={goLogin}>로그인</CustomButton>
+            { status!=='authenticated' ? (<CustomButton variant="outlined" onClick={goLogin}>로그인</CustomButton>) : (<CustomButton variant="outlined" onClick={logout}>로그아웃</CustomButton>)}
+            
           </Toolbar>
           
         </AppBar>

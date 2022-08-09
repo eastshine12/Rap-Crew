@@ -7,6 +7,16 @@
 </p>
 
 
+<p align="center">
+  <br>
+  <img src="./public/images/full_screen2.png">
+  <br>
+</p>
+
+
+
+
+
 ## 프로젝트 소개
 
 <p align="justify">

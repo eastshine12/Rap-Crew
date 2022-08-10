@@ -17,7 +17,7 @@ export default NextAuth({
         userId: { label: "아이디", type: "text", placeholder: "아이디를 입력하세요." },
         password: {  label: "비밀번호", type: "password" }
       },
-
+      
       async authorize(credentials, req) {
 
         console.log(`credentials : ${JSON.stringify(credentials)}`);
@@ -33,7 +33,7 @@ export default NextAuth({
             status: true,
           },
         });
-
+        console.log(`users : ${JSON.stringify(user)}`);
         if (!user) {
           throw new Error('user not found.');
         };
@@ -44,8 +44,27 @@ export default NextAuth({
         }
         // Return null if user data could not be retrieved
         return null
-      }
-    }),
-    // ...add more providers here
+    },
+  }),
+  // ...add more providers here
   ],
+  callbacks: {
+    session: async ({ session, token }) => {
+      if (session?.user) {
+        session.user.userId = token.userId;
+        session.user.status = token.status;
+      }
+      return session;
+    },
+    jwt: async ({ user, token }) => {
+      if (user) {
+        token.userId = user.userId;
+        token.status = user.status;
+      }
+      return token;
+    },
+  },
+  session: {
+    strategy: 'jwt',
+  },
 })

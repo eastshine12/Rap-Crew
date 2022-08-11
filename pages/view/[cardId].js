@@ -152,7 +152,7 @@ export default function card_view() {
                       fontSize: 15,
                     }}
                   >
-                    2022.05.16
+                    { String(cardData.createAt).substring(0, 10).replaceAll('-','.') }
                   </Typography>
                 </div>
               </Grid>

@@ -16,9 +16,19 @@ export default async function handler(req, res) {
       where: {
         cardId: Number(id),
       },
+      include: {
+        tb_user: {
+          select: {
+            userId: true,
+          },
+        },
+      },
     });
     if(card.length > 0) {
-      return res.send(card);
+      return res.send({
+        ...card[0],
+        userId: card[0].tb_user.userId,
+      });
     } else {
       return res.send("card not exist");
     }

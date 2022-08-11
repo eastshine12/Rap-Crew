@@ -98,8 +98,8 @@ export default function card_view() {
     if(!router.isReady) return;
     axios.get(`/api/getCard/${cardId}`)
     .then(res => {
-      console.log(res.data[0]);
-      setCardData(res.data[0]);
+      console.log(res.data);
+      setCardData(res.data);
     })
   }, []);
 
@@ -143,7 +143,7 @@ export default function card_view() {
                       fontWeight: 600
                     }}
                   >
-                    nickname
+                    { cardData.userId }
                     <FavoriteBorderIcon className={styles.favoIcon}/>
                     <ShareIcon className={styles.shareIcon}/>
                   </Typography>

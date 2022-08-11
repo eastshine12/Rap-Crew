@@ -28,6 +28,7 @@ export default NextAuth({
             password: credentials.password,
           },
           select: {
+            userNo: true,
             userId: true,
             email: true,
             status: true,
@@ -51,6 +52,7 @@ export default NextAuth({
   callbacks: {
     session: async ({ session, token }) => {
       if (session?.user) {
+        session.user.userNo = token.userNo;
         session.user.userId = token.userId;
         session.user.status = token.status;
       }
@@ -58,6 +60,7 @@ export default NextAuth({
     },
     jwt: async ({ user, token }) => {
       if (user) {
+        token.userNo = user.userNo;
         token.userId = user.userId;
         token.status = user.status;
       }

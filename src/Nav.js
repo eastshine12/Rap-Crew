@@ -85,7 +85,6 @@ export default function Nav(props) {
   const styles = useStyles();
   const router = useRouter();
   const { data: session, status } = useSession();
-  if (status === "authenticated") console.log("session", session);
 
   const goMain = function() {
     router.push("/");

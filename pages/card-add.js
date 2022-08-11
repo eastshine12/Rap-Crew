@@ -9,6 +9,7 @@ import TextField from '@mui/material/TextField';
 import { useState } from 'react';
 import axios from "axios";
 import { useRouter } from 'next/router';
+import { useSession, signIn } from "next-auth/react";
 
 import { dehydrate, QueryClient, useQuery } from "react-query";
 
@@ -32,33 +33,12 @@ const useStyles = makeStyles({
 
 
 
-// 리액트 쿼리 수정
-/*
-export async function getServerSideProps() {
-  const queryClient = new QueryClient();
-  await queryClient.prefetchQuery('testApi', getFeeds);
-
-  return {
-    props: {
-      dehydratedState : JSON.parse(JSON.stringify(dehydrate(queryClient))),
-    },
-  }
-
-}
-*/
-
 export default function card_add() {
     
-  /*
-    const { isLoading, error, data } = useQuery('testApi', () =>
-      getFeeds(),
-      {
-        keepPreviousData: true,
-        refetchOnMount: false,
-        refetchOnWindowFocus: false,
-      }
-    );
-    */
+
+    const { data: session, status } = useSession();
+    console.log(`현재 세션 : ${JSON.stringify(session)}`);
+
 
     const [card, setCard] = useState ({
       title: '',
@@ -75,9 +55,8 @@ export default function card_add() {
     const submitCardHandler = (e) => {
       e.preventDefault();
 
-      console.log(`title : ${card.title}`);
-      console.log(`content : ${card.content}`);
-    
+
+
       const reqData = {
         userNo: 1,
         title: card.title,
@@ -98,7 +77,12 @@ export default function card_add() {
       if(res.data === 'OK') {
         alert('게시글이 등록되었습니다.');
         router.push('/');
-      } else {
+      }
+      else if(res.data === 'LOGIN') {
+        alert('로그인 후에 이용 가능합니다.');
+        router.push('/login');
+      }
+      else {
         alert('게시글 작성에 실패했습니다.')
       }
     };

@@ -1,4 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { useSession, signIn } from "next-auth/react";
+import { useRouter } from 'next/router';
+import axios from 'axios';
+import Reply from '../../src/reply';
+
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
@@ -9,12 +14,13 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ShareIcon from '@mui/icons-material/Share';
 import Avatar from '@mui/material/Avatar';
 import AvatarGroup from '@mui/material/AvatarGroup';
-import Reply from '../../src/reply';
 import Button from '@mui/material/Button';
 import { border, padding } from '@mui/system';
 import { useSnackbar } from 'notistack';
-import axios from 'axios';
-import { useRouter } from 'next/router';
+import IconButton from '@mui/material/IconButton';
+import Stack from '@mui/material/Stack';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 
 const useStyles = makeStyles({
@@ -79,13 +85,34 @@ const useStyles = makeStyles({
 
 
 
+export async function getServerSideProps({ req, query }) {
+  
+  try {
+    const res = await axios.get(`http://${req.headers.host}/api/getCard/${query.cardId}`);
 
-export default function card_view() {
+    if(res.status === 200) {
+      const card = res.data;
+      return {
+        props : { card },
+      }
+    }
+  } catch(err) {
+    console.log(err);
+    return { props: {} };
+  }
+}
+
+
+
+export default function card_view({ card }) {
   
   const styles = useStyles();
   const router = useRouter();
-  const { cardId } = router.query;
   
+  const [title, content, userId, createAt] = card && [card.title, card.content, card.userId, card.createAt];
+
+  const { cardId } = router.query;
+  const { data: session, status } = useSession();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const handleClick = (variant) => () => {
@@ -96,13 +123,36 @@ export default function card_view() {
 
   useEffect(() => {
     if(!router.isReady) return;
-    axios.get(`/api/getCard/${cardId}`)
-    .then(res => {
-      console.log(res.data);
-      setCardData(res.data);
-    })
   }, []);
 
+
+  const deleteCardHandler = () => {
+    
+    if (confirm("게시글을 삭제하시겠습니까?")) {
+      axios.delete('/api/deleteCard', {
+          data:{ cardId }
+        }, {
+          headers: {
+            'Content-type': 'application/json'
+          },
+        })
+        .then(res => deleteResultHandler(res));
+    }
+  };
+
+  const deleteResultHandler = (res) => {
+    if(res.data === 'OK') {
+      alert('게시글이 삭제되었습니다.');
+      router.push('/');
+    }
+    else if(res.data === 'LOGIN') {
+      alert('로그인 후에 이용 가능합니다.');
+      router.push('/login');
+    }
+    else {
+      alert('게시글 삭제에 실패했습니다.')
+    }
+  };
 
 
   return (
@@ -116,19 +166,35 @@ export default function card_view() {
             </Grid>
 
             <Grid container item md={5}>
+
               <Grid item xs={12} sm={12} md={12} sx={{ 
                 bgcolor: 'none', 
-                padding: '0 1em 0.7em 0',
+                padding: '0 0em 0.7em 0',
                 }}
               >
-                <Typography
-                sx={{ 
-                  fontSize: 30,
-                  fontWeight: 700
-                }}
-                >
-                {cardData.title}
-                </Typography>
+                <Stack direction="row">
+
+                  <Typography
+                  sx={{ 
+                    fontSize: 30,
+                    fontWeight: 700,
+                  }}
+                  >
+                  {title}
+                  </Typography>
+
+                  { cardData.userNo === session?.user.userNo ? 
+                  (<>
+                    <IconButton aria-label="update">
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton aria-label="delete" onClick={deleteCardHandler}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </>) : '' }
+
+                </Stack>
+
               </Grid>
 
               <Grid item xs={12} sm={12} md={12} sx={{ 
@@ -143,7 +209,7 @@ export default function card_view() {
                       fontWeight: 600
                     }}
                   >
-                    { cardData.userId }
+                    { userId }
                     <FavoriteBorderIcon className={styles.favoIcon}/>
                     <ShareIcon className={styles.shareIcon}/>
                   </Typography>
@@ -152,7 +218,7 @@ export default function card_view() {
                       fontSize: 15,
                     }}
                   >
-                    { String(cardData.createAt).substring(0, 10).replaceAll('-','.') }
+                    { String(createAt).substring(0, 10).replaceAll('-','.') }
                   </Typography>
                 </div>
               </Grid>
@@ -189,7 +255,7 @@ export default function card_view() {
                     fontSize: 16,
                   }}
                 >
-                {cardData.content}
+                {content}
                 </Typography>
               </Box>
             </Grid>
@@ -265,3 +331,4 @@ export default function card_view() {
     </Container>
   );
 }
+

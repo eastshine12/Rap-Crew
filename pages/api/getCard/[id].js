@@ -15,6 +15,7 @@ export default async function handler(req, res) {
     const card =  await prisma.tb_card.findMany({
       where: {
         cardId: Number(id),
+        valid: true,
       },
       include: {
         tb_user: {

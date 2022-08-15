@@ -109,7 +109,7 @@ export default function card_view({ card }) {
   const styles = useStyles();
   const router = useRouter();
   
-  const [title, content, userId, createAt] = card && [card.title, card.content, card.userId, card.createAt];
+  const [title, content, userId, userNo, createAt] = card && [card.title, card.content, card.userId, card.userNo, card.createAt];
 
   const { cardId } = router.query;
   const { data: session, status } = useSession();
@@ -183,7 +183,7 @@ export default function card_view({ card }) {
                   {title}
                   </Typography>
 
-                  { cardData.userNo === session?.user.userNo ? 
+                  { session && userNo === session.user.userNo ? 
                   (<>
                     <IconButton aria-label="update">
                       <EditIcon />
@@ -265,12 +265,36 @@ export default function card_view({ card }) {
               <Grid container sx = {{ padding: '0 1em 1em 0' }}>
                 <Grid item xs={12} sm={12} md={12} sx={{pb: 3,}}>
                   <Typography
+                    display="inline"
                     sx={{ 
                       fontSize: 17,
                       fontWeight: 600
                     }}
                   >
                   참여중인 인원
+                  </Typography>
+                  <Typography
+                    display="inline"
+                    sx={{ 
+                      fontSize: 32,
+                      fontWeight: 600,
+                      lineHeight: 0.7,
+                      float: 'right',
+                    }}
+                  >
+                  /10 명
+                  </Typography>
+                  <Typography
+                    display="inline"
+                    sx={{ 
+                      fontSize: 32,
+                      fontWeight: 600,
+                      lineHeight: 0.7,
+                      color: '#0f66ff',
+                      float: 'right',
+                    }}
+                  >
+                  6
                   </Typography>
                 </Grid>
                 <Grid item xs={4} sm={4} md={4}>
@@ -299,7 +323,27 @@ export default function card_view({ card }) {
                   </AvatarGroup>
                 </Grid>
 
-                <Grid item xs={12} sm={12} md={12} sx={{pt : 14}}>
+                <Grid item xs={12} sm={12} md={12} sx={{pt : 8}}>
+                  <Typography
+                    display="inline"
+                    sx={{
+                      fontSize: '1.1em',
+                      fontWeight: 500,
+                      float: 'right',
+                      color: 'gray',
+                      lineHeight: 1.8,
+                    }}>&nbsp;남음</Typography>
+                  <Typography
+                    display="inline"
+                    sx={{
+                      fontSize: '1.3em',
+                      fontWeight: 600,
+                      float: 'right',
+                      color: 'black',
+                    }}>1일 19시간 27분 45초</Typography>
+                </Grid>
+
+                <Grid item xs={12} sm={12} md={12} sx={{pt : 1}}>
                   <Button variant="contained" fullWidth color='info'
                     onClick={handleClick('success')}
                     sx={{

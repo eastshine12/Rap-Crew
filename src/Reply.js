@@ -1,4 +1,8 @@
 import * as React from 'react';
+import { useState } from 'react';
+import { useRouter } from 'next/router';
+import axios from "axios";
+
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
@@ -10,6 +14,9 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+
+
 
 const useStyles = makeStyles({
   avatarSmall: {
@@ -50,10 +57,52 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
+const ReplyBtn = (disabled) => {
+  return <Button disabled={disabled} variant="contained">등록</Button>
+}
 
 export default function Reply() {
 
   const styles = useStyles();
+  const router = useRouter();
+  const { cardId }  = router.query;
+  const [replyContent, setReplyContent] = useState('');
+  const [replyFocus, setReplyFocus] = useState(false);
+  
+  const replyOnChangeHandler = (e) => {
+    setReplyContent(e.target.value);
+    // console.log(replyContent);
+  };
+
+  const replyBtnClickHandler = (e) => {
+    e.preventDefault();
+
+    const reqData = {
+      cardId,
+      content: replyContent,
+    }
+
+    axios.post('/api/addReply', reqData, {
+      headers: {
+        'Content-type': 'application/json'
+      },
+    })
+    .then(res => resultHandler(res));
+  };
+
+  const resultHandler = (res) => {
+    if(res.data === 'OK') {
+      alert('댓글이 등록되었습니다.');
+    }
+    else if(res.data === 'LOGIN') {
+      alert('로그인 후에 이용 가능합니다.');
+      router.push('/login');
+    }
+    else {
+      alert('댓글 작성에 실패했습니다.')
+    }
+  };
+
 
   return (
     <>
@@ -65,6 +114,7 @@ export default function Reply() {
             <Avatar sx={{margin: '0.3em'}}>
 
             </Avatar>
+
             <TextField fullWidth multiline
               label="댓글 입력"
               placeholder='댓글을 입력하세요.' 
@@ -72,7 +122,9 @@ export default function Reply() {
               sx={{
                 ml: 2
               }} 
+              onChange={replyOnChangeHandler}
             />
+            <Button variant="contained" onClick={replyBtnClickHandler}>등록</Button>
           </div>
         </Box>
 

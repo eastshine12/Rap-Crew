@@ -1,4 +1,9 @@
 import * as React from 'react';
+import { useState } from 'react';
+import axios from "axios";
+import { useRouter } from 'next/router';
+import { useSession, signIn } from "next-auth/react";
+
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -6,12 +11,8 @@ import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import { makeStyles } from '@mui/styles';
 import TextField from '@mui/material/TextField';
-import { useState } from 'react';
-import axios from "axios";
-import { useRouter } from 'next/router';
-import { useSession, signIn } from "next-auth/react";
-
-import { dehydrate, QueryClient, useQuery } from "react-query";
+import Typography from '@mui/material/Typography';
+import Slider from '@mui/material/Slider';
 
 
 const useStyles = makeStyles({
@@ -31,7 +32,16 @@ const useStyles = makeStyles({
   },
 })
 
-
+const marks = [
+  {
+    value: 1,
+    label: '1명',
+  },
+  {
+    value: 10,
+    label: '10명',
+  },
+];
 
 export default function card_add() {
     
@@ -43,24 +53,25 @@ export default function card_add() {
     const [card, setCard] = useState ({
       title: '',
       content: '',
+      recruitNum: 1,
     });
 
-    const onChangeText = (e) => {
+    const onChangeValue = (e) => {
       setCard({
         ...card,
         [e.target.name] : e.target.value,
       });
     };
 
+
     const submitCardHandler = (e) => {
       e.preventDefault();
-
-
 
       const reqData = {
         userNo: 1,
         title: card.title,
         content: card.content,
+        recruitNum: card.recruitNum,
       }
       
       axios.post('/api/addCard', reqData, {
@@ -102,8 +113,11 @@ export default function card_add() {
                       width: 1200,
                       maxWidth: '100%',
                     }}
-                  >
-                    <TextField fullWidth label="제목을 입력하세요." id="fullWidth" name="title" onChange={onChangeText} />
+                  > 
+                    <Typography fontSize="18px" fontWeight="600" padding="0 0 10px 0">
+                      제목
+                    </Typography>
+                    <TextField fullWidth label="제목을 입력하세요." id="fullWidth" name="title" onChange={onChangeValue} />
                   </Box>
                 </Grid>
 
@@ -114,6 +128,9 @@ export default function card_add() {
                       maxWidth: '100%',
                     }}
                   >
+                    <Typography fontSize="18px" fontWeight="600" padding="0 0 10px 0">
+                      내용
+                    </Typography>
                     <TextField 
                       fullWidth 
                       multiline 
@@ -121,8 +138,63 @@ export default function card_add() {
                       id="fullWidth"
                       rows={16}
                       name="content"
-                      onChange={onChangeText}
+                      onChange={onChangeValue}
                     />
+                  </Box>
+                </Grid>
+
+                <Grid item xs={12} sm={12} md={12} sx={{ bgcolor: 'none', padding: '1em' }}>
+                  <Box
+                    sx={{
+                      width: 1200,
+                      maxWidth: '100%',
+                    }}
+                  >
+                    <Typography fontSize="18px" fontWeight="600" padding="0 0 10px 0">
+                      음원 링크 (사운드클라우드)
+                    </Typography>
+                    <TextField fullWidth label="SoundCloud 링크 삽입" placeholder="" id="fullWidth" name="soundcloud" onChange={onChangeValue} />
+                  </Box>
+                </Grid>
+
+                <Grid item xs={12} sm={12} md={12} sx={{ bgcolor: 'none', padding: '1em' }}>
+                  <Box
+                    sx={{
+                      width: 700,
+                      maxWidth: '100%',
+                    }}
+                  >
+                    <Typography display="inline" fontSize="18px" fontWeight="600" padding="0 0 10px 0">
+                      모집 인원 :&nbsp;
+                    </Typography>
+                    <Typography display="inline" fontSize="18px" fontWeight="600" padding="0 0 10px 0">
+                      {card.recruitNum}명
+                    </Typography>
+                    <Slider
+                      aria-label="recruit"
+                      defaultValue={1}
+                      valueLabelDisplay="auto"
+                      step={1}
+                      marks={marks}
+                      min={1}
+                      max={10}
+                      name="recruitNum"
+                      onChange={onChangeValue}
+                    />
+                  </Box>
+                </Grid>
+
+                <Grid item xs={12} sm={12} md={12} sx={{ bgcolor: 'none', padding: '1em' }}>
+                  <Box
+                    sx={{
+                      width: 700,
+                      maxWidth: '100%',
+                    }}
+                  >
+                    <Typography fontSize="18px" fontWeight="600" padding="0 0 10px 0">
+                      모집 기간
+                    </Typography>
+
                   </Box>
                 </Grid>
 

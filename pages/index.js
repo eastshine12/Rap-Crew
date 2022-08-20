@@ -44,6 +44,7 @@ export default function index() {
           backgroundImage: `url(/images/main-title.jpg)`,
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
+          backgroundAttachment: "fixed",
           height: "70vh",
           pt: 8,
           pb: 10,

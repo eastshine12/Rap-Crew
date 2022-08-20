@@ -16,6 +16,9 @@ import Box from '@mui/material/Box';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 
 
@@ -94,6 +97,7 @@ export default function Reply({replys}) {
 
   const styles = useStyles();
   const router = useRouter();
+  const { data: session, status } = useSession();
   const { cardId }  = router.query;
   const [repls, setRepls] = useState(replys);
   const [replyContent, setReplyContent] = useState('');
@@ -140,8 +144,8 @@ export default function Reply({replys}) {
 
   const resultHandler = (res) => {
     if(res.data === 'OK') {
-      alert('댓글이 등록되었습니다.');
       refreshReply();
+      setReplyContent('');
     }
     else if(res.data === 'LOGIN') {
       alert('로그인 후에 이용 가능합니다.');
@@ -153,11 +157,48 @@ export default function Reply({replys}) {
   };
 
 
+  const deleteReplyHandler = (reply) => {
+    
+    if (confirm("댓글을 삭제하시겠습니까?")) {
+      console.log(JSON.stringify(reply));
+      axios.delete('/api/deleteReply', {data : reply}, {
+        headers: {
+          'Content-type': 'application/json'
+        },
+      })
+      .then(res => deleteResultHandler(res));
+    }
+  };
+
+
+
+  const deleteResultHandler = (res) => {
+    if(res.data === 'OK') {
+      // alert('댓글이 삭제되었습니다.');
+      refreshReply();
+    }
+    else if(res.data === 'LOGIN') {
+      alert('로그인 후에 이용 가능합니다.');
+      router.push('/login');
+    }
+    else {
+      alert('댓글 삭제에 실패했습니다.')
+    }
+  };
+
 
 
 
   return (
     <>
+    <Typography
+      sx={{ 
+        fontSize: 18,
+        mb: 1,
+      }}
+    >
+      댓글 <b>{repls.length}</b>
+    </Typography>
     <Grid container sx = {{ padding: '5em, 1em, 1em, 1em' }}>
       <Box sx={{ width: '100%' }}>
 
@@ -175,6 +216,7 @@ export default function Reply({replys}) {
                 ml: 2
               }} 
               onChange={replyOnChangeHandler}
+              value={replyContent}
             />
             <Button variant="contained" onClick={replyBtnClickHandler}>등록</Button>
           </div>
@@ -195,7 +237,7 @@ export default function Reply({replys}) {
             > 
               <Grid container>
                 <Grid item xs={12} sm={12} md={12} sx={{pt : 1}}>
-                  <div style={{display: 'flex'}}>
+                  <div style={{display: 'flex', alignItems: 'center'}}>
                     <Avatar
                       className={styles.avatarSmall}
                       src= {"/images/user1.PNG"} 
@@ -211,6 +253,17 @@ export default function Reply({replys}) {
                     >
                     {data.tb_user.userId}
                     </Typography>
+                    { session && data.userNo === session.user.userNo ? 
+                      (<>
+                        &nbsp;&nbsp;
+                        <IconButton aria-label="update" >
+                          <EditIcon color="primary" fontSize="small"/>
+                        </IconButton>
+                        <IconButton aria-label="delete" onClick={()=> deleteReplyHandler(data)}>
+                          <DeleteIcon fontSize="small"/>
+                        </IconButton>
+                      </>) : '' 
+                    }
                   </div>
                   
                 </Grid>

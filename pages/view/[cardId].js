@@ -360,15 +360,6 @@ export default function card_view({ card, replys }) {
             </Grid>
 
             <Grid item xs={12} sm={12} md={12} sx={{ bgcolor: 'none', margin: '3em 1em 1em 0' }}>
-              <Typography
-                sx={{ 
-                  fontSize: 18,
-                  mb: 1,
-                }}
-              >
-                댓글 <b>{replys.length}</b>
-              </Typography>
-              
               <Reply replys={replysData} /> 
             </Grid>
 

@@ -89,27 +89,31 @@ export async function getServerSideProps({ req, query }) {
   
   try {
     const res = await axios.get(`http://${req.headers.host}/api/getCard/${query.cardId}`);
+    const res2 = await axios.get(`http://${req.headers.host}/api/getReply/${query.cardId}`);
 
-    if(res.status === 200) {
+    if(res.status === 200 && res2.status === 200) {
       const card = res.data;
+      const replys = res2.data;
       return {
-        props : { card },
+        props : { card, replys },
       }
     }
   } catch(err) {
     console.log(err);
     return { props: {} };
   }
+
 }
 
 
 
-export default function card_view({ card }) {
+export default function card_view({ card, replys }) {
   
   const styles = useStyles();
   const router = useRouter();
-  
   const [title, content, userId, userNo, createAt] = card && [card.title, card.content, card.userId, card.userNo, card.createAt];
+
+  let replysData = replys;
 
   const { cardId } = router.query;
   const { data: session, status } = useSession();
@@ -153,7 +157,6 @@ export default function card_view({ card }) {
       alert('게시글 삭제에 실패했습니다.')
     }
   };
-
 
   return (
     <Container className={styles.container}>
@@ -363,10 +366,10 @@ export default function card_view({ card }) {
                   mb: 1,
                 }}
               >
-                댓글 <b>3</b>
+                댓글 <b>{replys.length}</b>
               </Typography>
               
-              <Reply /> 
+              <Reply replys={replysData} /> 
             </Grid>
 
           </Grid>

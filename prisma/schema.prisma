@@ -1,4 +1,3 @@
-
 // 마이그레이션 파일 만들기
 // npx prisma migrate dev --name 파일이름 --create-only
 
@@ -25,17 +24,18 @@ datasource db {
 }
 
 model tb_card {
-  cardId     BigInt     @id @default(autoincrement())
+  cardId     BigInt       @id @default(autoincrement())
   userNo     BigInt
-  title      String     @db.VarChar(256)
-  content    String?    @db.Text
-  createAt   DateTime   @default(now()) @db.Timestamp(0)
-  updateAt   DateTime   @default(now()) @db.Timestamp(0)
-  valid      Boolean    @default(true)
-  recruitAt  DateTime?  @db.Timestamp(0)
+  title      String       @db.VarChar(256)
+  content    String?      @db.Text
+  createAt   DateTime     @default(now()) @db.Timestamp(0)
+  updateAt   DateTime     @default(now()) @db.Timestamp(0)
+  valid      Boolean      @default(true)
+  recruitAt  DateTime?    @db.Timestamp(0)
   recruitNum Int?
-  tb_user    tb_user    @relation(fields: [userNo], references: [userNo], onDelete: NoAction, onUpdate: NoAction, map: "tb_card_FK")
+  tb_user    tb_user      @relation(fields: [userNo], references: [userNo], onDelete: NoAction, onUpdate: NoAction, map: "tb_card_FK")
   tb_like    tb_like[]
+  tb_recruit tb_recruit[]
   tb_reply   tb_reply[]
 
   @@index([userNo], map: "tb_card_FK")
@@ -75,15 +75,30 @@ model tb_reply {
 }
 
 model tb_user {
-  userNo    BigInt     @id @default(autoincrement())
-  userId    String     @db.VarChar(64)
-  password  String     @db.VarChar(64)
-  email     String     @db.VarChar(128)
-  agreement Boolean    
-  status    Int        @default(1)
-  createAt  DateTime   @default(now()) @db.Timestamp(0)
-  updateAt  DateTime   @default(now()) @db.Timestamp(0)
-  tb_card   tb_card[]
-  tb_like   tb_like[]
-  tb_reply  tb_reply[]
+  userNo     BigInt       @id @default(autoincrement())
+  userId     String       @db.VarChar(64)
+  password   String       @db.VarChar(64)
+  email      String       @db.VarChar(128)
+  agreement  Boolean
+  status     Int          @default(1)
+  createAt   DateTime     @default(now()) @db.Timestamp(0)
+  updateAt   DateTime     @default(now()) @db.Timestamp(0)
+  tb_card    tb_card[]
+  tb_like    tb_like[]
+  tb_recruit tb_recruit[]
+  tb_reply   tb_reply[]
+}
+
+model tb_recruit {
+  recruitNo BigInt    @id @default(autoincrement())
+  cardId    BigInt
+  userNo    BigInt
+  status    Int       @default(0)
+  requestAt DateTime  @db.Timestamp(0)
+  joinAt    DateTime? @db.Timestamp(0)
+  tb_card   tb_card   @relation(fields: [cardId], references: [cardId], onDelete: NoAction, onUpdate: NoAction, map: "tb_recruit_FK")
+  tb_user   tb_user   @relation(fields: [userNo], references: [userNo], onDelete: NoAction, onUpdate: NoAction, map: "tb_recruit_FK_1")
+
+  @@index([cardId], map: "tb_recruit_FK")
+  @@index([userNo], map: "tb_recruit_FK_1")
 }

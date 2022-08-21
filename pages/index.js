@@ -74,8 +74,18 @@ export default function index() {
             spacing={2}
             justifyContent="center"
           >
-            <Button variant="contained" size="large" onClick={routeSignUp}>가입하기</Button>
-            <Button variant="outlined" size="large" onClick={routeCardCreate}>모집하기</Button>
+            {status !== "authenticated"?
+            (<>
+              <Button variant="contained" size="large" onClick={routeSignUp}>가입하기</Button>
+              <Button variant="outlined" size="large" onClick={routeCardCreate}>모집하기</Button>
+            </>) :
+            (<>
+              <Typography color='white' variant="h5" lineHeight="1.8">{session.user.userId} 님께서 직접 </Typography>
+              <Button variant="outlined" sx={{width: 80, height: 40, fontSize: 22, color: 'white',backgroundColor: "rgb(59 75 149 / 45%)"}} onClick={routeCardCreate}>모집</Button>
+              <Typography color='white' variant="h5" lineHeight="1.8">해보세요! </Typography>
+            </>)
+            }
+            
           </Stack>
         </Container>
       </Box>

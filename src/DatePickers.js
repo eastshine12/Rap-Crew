@@ -18,7 +18,7 @@ export default function MaterialUIPickers({card, setCard}) {
   const fnChangeValue = (date) => {
     setCard({
       ...card,
-      'recruitAt': date,
+      'recruitAt': new Date(new Date(date).setHours(0, 0, 0, 0)),
     })
   };
 
@@ -27,6 +27,7 @@ export default function MaterialUIPickers({card, setCard}) {
       <DatePicker
         label="모집 기간"
         value={card.recruitAt}
+        inputFormat="yyyy/MM/dd"
         onChange={fnChangeValue}
         renderInput={(params) => <TextField {...params} />}
       />

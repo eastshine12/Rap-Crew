@@ -116,7 +116,6 @@ export default function card_view({ card, replys }) {
   const [title, content, userId, userNo, createAt, recruitNum, recruitAt] = card && [card.title, card.content, card.userId, card.userNo, card.createAt, card.recruitNum, card.recruitAt];
 
   let replysData = replys;
-  const timer = new Date(recruitAt);
 
   const { cardId } = router.query;
   const { data: session, status } = useSession();
@@ -332,7 +331,7 @@ export default function card_view({ card, replys }) {
                 <Grid item xs={12} sm={12} md={12} sx={{pt : 8}}>
                   <Stack direction="row">
                     <Typography sx={{
-                        paddingLeft: '4.5em',
+                        paddingLeft: '1.8em',
                     }}>
                       &nbsp;
                     </Typography>
@@ -344,12 +343,13 @@ export default function card_view({ card, replys }) {
                         hideSecond
                         size='small'
                         titlePosition='none'
-                        endAt={timer} // Date/Time
+                        endAtZero
+                        endAt={recruitAt} // Date/Time
                     />
                     <Typography sx={{
-                        fontSize: '1.1em',
+                        fontSize: '1.5em',
                         fontWeight: 500,
-                        lineHeight: 1.8,
+                        lineHeight: 1.5,
                     }}>
                       일
                     </Typography>
@@ -361,12 +361,13 @@ export default function card_view({ card, replys }) {
                         hideSecond
                         size='small'
                         titlePosition='none'
-                        endAt={timer} // Date/Time
+                        endAtZero
+                        endAt={recruitAt} // Date/Time
                     />
                     <Typography sx={{
-                        fontSize: '1.1em',
+                        fontSize: '1.5em',
                         fontWeight: 500,
-                        lineHeight: 1.8,
+                        lineHeight: 1.5,
                     }}>
                       시
                     </Typography>
@@ -378,12 +379,13 @@ export default function card_view({ card, replys }) {
                         hideSecond
                         size='small'
                         titlePosition='none'
-                        endAt={timer} // Date/Time
+                        endAtZero
+                        endAt={recruitAt} // Date/Time
                     />
                     <Typography sx={{
-                        fontSize: '1.1em',
+                        fontSize: '1.5em',
                         fontWeight: 500,
-                        lineHeight: 1.8,
+                        lineHeight: 1.5,
                     }}>
                       분
                     </Typography>
@@ -395,25 +397,25 @@ export default function card_view({ card, replys }) {
                         hideMinute
                         size='small'
                         titlePosition='none'
-                        endAt={timer} // Date/Time
+                        endAtZero
+                        endAt={recruitAt} // Date/Time
                         onTimeUp={() => console.log("Time's up ⏳")}
                     />
                     <Typography sx={{
-                        fontSize: '1.1em',
+                        fontSize: '1.5em',
                         fontWeight: 500,
-                        lineHeight: 1.8,
+                        lineHeight: 1.5,
                     }}>
                       초
                     </Typography>
                     
                     <Typography
-                      display="inline"
+                      // display="inline"
                       sx={{
-                        fontSize: '1.1em',
+                        fontSize: '1.5em',
                         fontWeight: 500,
-                        float: 'right',
-                        color: 'gray',
-                        lineHeight: 1.8,
+                        // float: 'right',
+                        lineHeight: 1.5,
                       }}>&nbsp;남음
                     </Typography>
 

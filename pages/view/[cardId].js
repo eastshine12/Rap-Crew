@@ -22,6 +22,8 @@ import Stack from '@mui/material/Stack';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
+import FlipCountdown from '@rumess/react-flip-countdown';
+
 
 const useStyles = makeStyles({
   container: {
@@ -111,9 +113,10 @@ export default function card_view({ card, replys }) {
   
   const styles = useStyles();
   const router = useRouter();
-  const [title, content, userId, userNo, createAt] = card && [card.title, card.content, card.userId, card.userNo, card.createAt];
+  const [title, content, userId, userNo, createAt, recruitNum, recruitAt] = card && [card.title, card.content, card.userId, card.userNo, card.createAt, card.recruitNum, card.recruitAt];
 
   let replysData = replys;
+  const timer = new Date(recruitAt);
 
   const { cardId } = router.query;
   const { data: session, status } = useSession();
@@ -209,7 +212,7 @@ export default function card_view({ card, replys }) {
                   <Typography
                     sx={{ 
                       fontSize: 20,
-                      fontWeight: 600
+                      fontWeight: 600,
                     }}
                   >
                     { userId }
@@ -221,7 +224,7 @@ export default function card_view({ card, replys }) {
                       fontSize: 15,
                     }}
                   >
-                    { String(createAt).substring(0, 10).replaceAll('-','.') }
+                    { String(createAt).substring(0, 10).replace(/\-/gi, ".") }
                   </Typography>
                 </div>
               </Grid>
@@ -285,7 +288,7 @@ export default function card_view({ card, replys }) {
                       float: 'right',
                     }}
                   >
-                  /10 명
+                  /{recruitNum} 명
                   </Typography>
                   <Typography
                     display="inline"
@@ -297,7 +300,7 @@ export default function card_view({ card, replys }) {
                       float: 'right',
                     }}
                   >
-                  6
+                  1
                   </Typography>
                 </Grid>
                 <Grid item xs={4} sm={4} md={4}>
@@ -327,23 +330,95 @@ export default function card_view({ card, replys }) {
                 </Grid>
 
                 <Grid item xs={12} sm={12} md={12} sx={{pt : 8}}>
-                  <Typography
-                    display="inline"
-                    sx={{
-                      fontSize: '1.1em',
-                      fontWeight: 500,
-                      float: 'right',
-                      color: 'gray',
-                      lineHeight: 1.8,
-                    }}>&nbsp;남음</Typography>
-                  <Typography
-                    display="inline"
-                    sx={{
-                      fontSize: '1.3em',
-                      fontWeight: 600,
-                      float: 'right',
-                      color: 'black',
-                    }}>1일 19시간 27분 45초</Typography>
+                  <Stack direction="row">
+                    <Typography sx={{
+                        paddingLeft: '4.5em',
+                    }}>
+                      &nbsp;
+                    </Typography>
+                    <FlipCountdown
+                        hideYear
+                        hideMonth
+                        hideHour
+                        hideMinute
+                        hideSecond
+                        size='small'
+                        titlePosition='none'
+                        endAt={timer} // Date/Time
+                    />
+                    <Typography sx={{
+                        fontSize: '1.1em',
+                        fontWeight: 500,
+                        lineHeight: 1.8,
+                    }}>
+                      일
+                    </Typography>
+                    <FlipCountdown
+                        hideYear
+                        hideMonth
+                        hideDay
+                        hideMinute
+                        hideSecond
+                        size='small'
+                        titlePosition='none'
+                        endAt={timer} // Date/Time
+                    />
+                    <Typography sx={{
+                        fontSize: '1.1em',
+                        fontWeight: 500,
+                        lineHeight: 1.8,
+                    }}>
+                      시
+                    </Typography>
+                    <FlipCountdown
+                        hideYear
+                        hideMonth
+                        hideDay
+                        hideHour
+                        hideSecond
+                        size='small'
+                        titlePosition='none'
+                        endAt={timer} // Date/Time
+                    />
+                    <Typography sx={{
+                        fontSize: '1.1em',
+                        fontWeight: 500,
+                        lineHeight: 1.8,
+                    }}>
+                      분
+                    </Typography>
+                    <FlipCountdown
+                        hideYear
+                        hideMonth
+                        hideDay
+                        hideHour
+                        hideMinute
+                        size='small'
+                        titlePosition='none'
+                        endAt={timer} // Date/Time
+                        onTimeUp={() => console.log("Time's up ⏳")}
+                    />
+                    <Typography sx={{
+                        fontSize: '1.1em',
+                        fontWeight: 500,
+                        lineHeight: 1.8,
+                    }}>
+                      초
+                    </Typography>
+                    
+                    <Typography
+                      display="inline"
+                      sx={{
+                        fontSize: '1.1em',
+                        fontWeight: 500,
+                        float: 'right',
+                        color: 'gray',
+                        lineHeight: 1.8,
+                      }}>&nbsp;남음
+                    </Typography>
+
+                  </Stack>
+                    
                 </Grid>
 
                 <Grid item xs={12} sm={12} md={12} sx={{pt : 1}}>

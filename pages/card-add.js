@@ -13,6 +13,7 @@ import { makeStyles } from '@mui/styles';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Slider from '@mui/material/Slider';
+import DatePickers from '../src/DatePickers';
 
 
 const useStyles = makeStyles({
@@ -45,7 +46,7 @@ const marks = [
 
 export default function card_add() {
     
-
+    const router = useRouter();
     const { data: session, status } = useSession();
     console.log(`현재 세션 : ${JSON.stringify(session)}`);
 
@@ -54,6 +55,7 @@ export default function card_add() {
       title: '',
       content: '',
       recruitNum: 1,
+      recruitAt: new Date(),
     });
 
     const onChangeValue = (e) => {
@@ -68,10 +70,10 @@ export default function card_add() {
       e.preventDefault();
 
       const reqData = {
-        userNo: 1,
         title: card.title,
         content: card.content,
         recruitNum: card.recruitNum,
+        recruitAt : card.recruitAt,
       }
       
       axios.post('/api/addCard', reqData, {
@@ -83,7 +85,7 @@ export default function card_add() {
 
     }
 
-    const router = useRouter();
+    
     const resultHandler = (res) => {
       if(res.data === 'OK') {
         alert('게시글이 등록되었습니다.');
@@ -117,7 +119,7 @@ export default function card_add() {
                     <Typography fontSize="18px" fontWeight="600" padding="0 0 10px 0">
                       제목
                     </Typography>
-                    <TextField fullWidth label="제목을 입력하세요." id="fullWidth" name="title" onChange={onChangeValue} />
+                    <TextField fullWidth value={card.title} label="제목을 입력하세요." id="fullWidth" name="title" onChange={onChangeValue} />
                   </Box>
                 </Grid>
 
@@ -135,6 +137,7 @@ export default function card_add() {
                       fullWidth 
                       multiline 
                       label="내용을 입력하세요." 
+                      value={card.content}
                       id="fullWidth"
                       rows={16}
                       name="content"
@@ -173,6 +176,7 @@ export default function card_add() {
                     <Slider
                       aria-label="recruit"
                       defaultValue={1}
+                      value={card.recruitNum}
                       valueLabelDisplay="auto"
                       step={1}
                       marks={marks}
@@ -194,7 +198,7 @@ export default function card_add() {
                     <Typography fontSize="18px" fontWeight="600" padding="0 0 10px 0">
                       모집 기간
                     </Typography>
-
+                    <DatePickers card={card} setCard={setCard} />
                   </Box>
                 </Grid>
 

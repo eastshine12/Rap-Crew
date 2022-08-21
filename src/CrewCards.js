@@ -230,7 +230,7 @@ export default function CrewCards() {
                   </div>
                   <div>
                     
-                    <p>{card.createAt.substring(0, 10).replaceAll('-','.')}
+                    <p>{card.createAt.substring(0, 10).replace(/\-/gi, ".")}
                       <FavoriteBorderIcon className={styles.favoIcon}/>
                       <ShareIcon className={styles.shareIcon}/>
 

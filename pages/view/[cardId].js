@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSession, signIn } from "next-auth/react";
 import { useRouter } from 'next/router';
 import axios from 'axios';
@@ -113,7 +113,14 @@ export default function card_view({ card, replys }) {
   
   const styles = useStyles();
   const router = useRouter();
+
   const [title, content, userId, userNo, createAt, recruitNum, recruitAt] = card && [card.title, card.content, card.userId, card.userNo, card.createAt, card.recruitNum, card.recruitAt];
+
+  const [recruitBtn, setRecruitBtn] = useState({
+    disabled:false,
+    text:'참여 요청하기',
+    cancel: false,
+  });
 
   let replysData = replys;
 
@@ -121,8 +128,24 @@ export default function card_view({ card, replys }) {
   const { data: session, status } = useSession();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-  const handleClick = (variant) => () => {
-      enqueueSnackbar('참여 요청이 완료되었습니다.', {variant});
+  const recruitBtnClickHandler = (variant) => () => {
+      if(variant ==='success') {
+        enqueueSnackbar('참여 요청이 완료되었습니다.', {variant});
+        setRecruitBtn({
+          ...recruitBtn,
+          text:'참여 요청 취소하기',
+          cancel: true,
+        });
+      } else {
+        enqueueSnackbar('참여 요청이 취소되었습니다.', {variant});
+        setRecruitBtn({
+          ...recruitBtn,
+          text:'참여 요청하기',
+          cancel: false,
+        });
+      }
+      
+
   };
 
   const [cardData, setCardData] = useState([]);
@@ -159,6 +182,17 @@ export default function card_view({ card, replys }) {
       alert('게시글 삭제에 실패했습니다.')
     }
   };
+
+
+
+  const recruitEndHandler = () => {
+    setRecruitBtn({
+      ...recruitBtn,
+      disabled:true,
+      text:'모집이 마감되었습니다.',
+    });
+
+  }
 
   return (
     <Container className={styles.container}>
@@ -272,7 +306,7 @@ export default function card_view({ card, replys }) {
                   <Typography
                     display="inline"
                     sx={{ 
-                      fontSize: 17,
+                      fontSize: 23,
                       fontWeight: 600
                     }}
                   >
@@ -281,9 +315,9 @@ export default function card_view({ card, replys }) {
                   <Typography
                     display="inline"
                     sx={{ 
-                      fontSize: 32,
+                      fontSize: 28,
                       fontWeight: 600,
-                      lineHeight: 0.7,
+                      lineHeight: 1,
                       float: 'right',
                     }}
                   >
@@ -292,9 +326,9 @@ export default function card_view({ card, replys }) {
                   <Typography
                     display="inline"
                     sx={{ 
-                      fontSize: 32,
+                      fontSize: 28,
                       fontWeight: 600,
-                      lineHeight: 0.7,
+                      lineHeight: 1,
                       color: '#0f66ff',
                       float: 'right',
                     }}
@@ -399,7 +433,7 @@ export default function card_view({ card, replys }) {
                         titlePosition='none'
                         endAtZero
                         endAt={recruitAt} // Date/Time
-                        onTimeUp={() => console.log("Time's up ⏳")}
+                        onTimeUp={recruitEndHandler}
                     />
                     <Typography sx={{
                         fontSize: '1.5em',
@@ -424,13 +458,18 @@ export default function card_view({ card, replys }) {
                 </Grid>
 
                 <Grid item xs={12} sm={12} md={12} sx={{pt : 1}}>
-                  <Button variant="contained" fullWidth color='info'
-                    onClick={handleClick('success')}
+                  <Button 
+                    variant={!recruitBtn.cancel?"contained":"outlined"} 
+                    fullWidth 
+                    color={!recruitBtn.cancel?'info':'warning'}
+                    onClick={!recruitBtn.cancel? recruitBtnClickHandler('success') : recruitBtnClickHandler('warning')}
                     sx={{
                       fontSize: '1.1em',
                       height: '3em',
                       fontWeight: 700
-                    }}>참여 요청하기</Button>
+                    }}
+                    disabled={recruitBtn.disabled}
+                    >{recruitBtn.text}</Button>
                 </Grid>
 
               </Grid>

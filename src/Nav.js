@@ -94,6 +94,10 @@ export default function Nav(props) {
     router.push('/login');
   }
 
+  const goNoti = () => {
+    router.push('/noti');
+  }
+
   const logout = () => {
     signOut();
   }
@@ -211,6 +215,7 @@ export default function Nav(props) {
                     size="large"
                     aria-label="show 17 new notifications"
                     color="inherit"
+                    onClick={goNoti}
                   >
                     <Badge badgeContent={17} color="error">
                       <NotificationsIcon />

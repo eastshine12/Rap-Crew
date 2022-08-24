@@ -47,6 +47,7 @@ const marks = [
 export default function card_add() {
     
     const router = useRouter();
+    const styles = useStyles();
     const { data: session, status } = useSession();
     console.log(`현재 세션 : ${JSON.stringify(session)}`);
 
@@ -99,10 +100,6 @@ export default function card_add() {
         alert('게시글 작성에 실패했습니다.')
       }
     };
-
-
-    
-    const styles = useStyles();
 
     return (
         <Container className={styles.container}>

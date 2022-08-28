@@ -25,6 +25,7 @@ import ReplyIcon from '@mui/icons-material/Reply';
 import CommentIcon from '@mui/icons-material/Comment';
 import AddReactionIcon from '@mui/icons-material/AddReaction';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import CircleIcon from '@mui/icons-material/Circle';
 
 
 const useStyles = makeStyles({
@@ -51,7 +52,7 @@ const notis = [
         userNo: 1,        
         title: '모집합니다~~~',
         targetUserId: 'test1',
-        createAt: new Date('2022-08-25 1:23:45'),
+        createAt: new Date('2022-08-26 1:23:45'),
         ack: false,
     },
     {
@@ -61,7 +62,7 @@ const notis = [
         title: '댓글달아주세요~',
         targetUserId: 'test2',
         createAt: new Date('2022-08-20 15:24:45'),
-        ack: true,
+        ack: false,
     },
     {
         notiNo: 3,
@@ -96,7 +97,20 @@ const TodayHeader = (props) => {
     const data = props.data;
  return (
     <Typography fontSize="18px" fontWeight="600" padding="2em 0 0.8em 0">
-        {moment(data.createAt).format('MM월 DD일 dd요일')}
+        {moment().format('YYYYMMdd') === moment(data.createAt).format('YYYYMMdd')?
+        "오늘" : (moment(data.createAt).format('MM월 DD일 dd요일'))}
+    </Typography>
+ );
+};
+
+let ackChkBool = true;
+const ReadSeparator = (props) => {
+    if (!ackChkBool) return "";
+    const data = props.data;
+    ackChkBool = false;
+ return (
+    <Typography fontSize="13px" color='gray' fontWeight="600" padding="3.5em 0 2em 0" alignContent='center'>
+        ⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;🔻 여기까지 읽었습니다.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤
     </Typography>
  );
 };
@@ -107,6 +121,7 @@ const CardPreset = (props) => {
 
     let iconType = '';
     let suffixText = '';
+    
 
     switch(data.notiType) {
         case 'like':
@@ -132,7 +147,10 @@ const CardPreset = (props) => {
       };
 
     return (
+        <>
+        {data.ack ? <ReadSeparator />:""}
         <Box sx={{ minWidth: 275, mb: 1.5,}}>
+            {/* {!data.ack && <CircleIcon sx={{color:'red', fontSize: '9px',}} />} */}
             <Card variant="outlined">
                 <Grid container spacing={1} padding='1em'>
 
@@ -155,7 +173,7 @@ const CardPreset = (props) => {
                                 mr: 1,
                             }}
                         >
-                            {moment(data.createAt).format('a h시 mm분')}
+                            {moment(data.createAt).fromNow()}
                         </Typography>
                     </Grid>
                     <Grid item xs={12} sm={2} md={1.5}>
@@ -174,6 +192,7 @@ const CardPreset = (props) => {
                 </Grid>
             </Card>
         </Box>
+        </>
     )
 };
 

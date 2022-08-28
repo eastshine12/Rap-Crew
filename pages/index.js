@@ -80,9 +80,22 @@ export default function index() {
               <Button variant="outlined" size="large" onClick={routeCardCreate}>모집하기</Button>
             </>) :
             (<>
-              <Typography color='white' variant="h5" lineHeight="1.8">{session.user.userId} 님께서 직접 </Typography>
-              <Button variant="contained" sx={{width: 80, height: 40, fontSize: 22, color: 'white',backgroundColor: "rgb(59 75 149 / 45%)"}} onClick={routeCardCreate}>모집</Button>
-              <Typography color='white' variant="h5" lineHeight="1.8">해보세요! </Typography>
+              <Typography color='white' variant="h5" lineHeight="1.8">{session.user.userId}님!&nbsp;&nbsp;자 이제 크루원을 </Typography>
+              <Button 
+                variant="contained" 
+                sx={{
+                  width: 80, 
+                  height: 40, 
+                  fontSize: 22, 
+                  color: 'black',
+                  backgroundColor: "#ffffffcf", 
+                  '&:hover': {
+                    backgroundColor: '#3c3c3c',
+                    color: 'white',
+                  }
+                }} 
+                onClick={routeCardCreate}>모집</Button>
+              <Typography color='white' variant="h5" lineHeight="1.8">해보세요. </Typography>
             </>)
             }
             

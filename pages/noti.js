@@ -103,17 +103,17 @@ const TodayHeader = (props) => {
  );
 };
 
-let ackChkBool = true;
-const ReadSeparator = (props) => {
-    if (!ackChkBool) return "";
-    const data = props.data;
-    ackChkBool = false;
- return (
-    <Typography fontSize="13px" color='gray' fontWeight="600" padding="3.5em 0 2em 0" alignContent='center'>
-        ⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;🔻 여기까지 읽었습니다.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤
-    </Typography>
- );
-};
+// let ackChkBool = true;
+// const ReadSeparator = (props) => {
+//     if (!ackChkBool) return "";
+//     const data = props.data;
+//     ackChkBool = false;
+//  return (
+//     <Typography fontSize="13px" color='gray' fontWeight="600" padding="3.5em 0 2em 0" alignContent='center'>
+//         ⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;🔻 여기까지 읽었습니다.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤⏤
+//     </Typography>
+//  );
+// };
 
 const CardPreset = (props) => {
 
@@ -148,14 +148,15 @@ const CardPreset = (props) => {
 
     return (
         <>
-        {data.ack ? <ReadSeparator />:""}
+        {/* {data.ack ? <ReadSeparator />:""} */}
         <Box sx={{ minWidth: 275, mb: 1.5,}}>
-            {/* {!data.ack && <CircleIcon sx={{color:'red', fontSize: '9px',}} />} */}
+            
             <Card variant="outlined">
                 <Grid container spacing={1} padding='1em'>
 
                     <Grid item xs={12} sm={7} md='auto'>
                         <Stack direction="row">
+                            {!data.ack && <CircleIcon sx={{color:'red', fontSize: '7px', margin: '-1em 0 0 -1em',}} />}
                             {iconType}
                             <Typography fontSize="15px" lineHeight='2.0em'>
                                 <b>{data.targetUserId}</b>님께서 <Link>{data.title}</Link> {suffixText}
@@ -225,6 +226,7 @@ export default function noti() {
 
                         const dataYear = moment(noti.createAt).format('yyyy');
                         const dataToday = moment(noti.createAt).format('MM월 DD일 dd요일');
+                        
 
                         if(beforeDataYear!==dataYear) {
                             beforeDataYear=dataYear;

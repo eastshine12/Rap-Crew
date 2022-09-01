@@ -92,12 +92,14 @@ export async function getServerSideProps({ req, query }) {
   try {
     const res = await axios.get(`http://${req.headers.host}/api/getCard/${query.cardId}`);
     const res2 = await axios.get(`http://${req.headers.host}/api/getReply/${query.cardId}`);
+    const res3 = await axios.get(`http://${req.headers.host}/api/getRecruit/${query.cardId}`);
 
     if(res.status === 200 && res2.status === 200) {
       const card = res.data;
       const replys = res2.data;
+      const recruit = res3.data?res3.data:{status:false};
       return {
-        props : { card, replys },
+        props : { card, replys, recruit },
       }
     }
   } catch(err) {
@@ -109,17 +111,18 @@ export async function getServerSideProps({ req, query }) {
 
 
 
-export default function card_view({ card, replys }) {
+export default function card_view({ card, replys, recruit }) {
   
   const styles = useStyles();
   const router = useRouter();
 
-  const [title, content, userId, userNo, createAt, recruitNum, recruitAt] = card && [card.title, card.content, card.userId, card.userNo, card.createAt, card.recruitNum, card.recruitAt];
-
+  const [title, content, userId, userNo, createAt, recruitNum, recruitAt, recruitNo, recruitStatus] = card && [card.title, card.content, card.userId, card.userNo, card.createAt, card.recruitNum, card.recruitAt, recruit.recruitNo, recruit.status];
+  console.log(`recruitNo : ${recruitNo}`);
+  console.log(`recruitStatus : ${recruitStatus}`);
   const [recruitBtn, setRecruitBtn] = useState({
     disabled:false,
-    text:'참여 요청하기',
-    cancel: false,
+    text:recruitStatus?'참여 요청하기':'참여 요청 취소하기',
+    cancel: recruitStatus?true:false,
   });
 
   let replysData = replys;
@@ -144,8 +147,22 @@ export default function card_view({ card, replys }) {
           cancel: false,
         });
       }
-      
+      recruitAPIHandler();
+  };
 
+  const recruitAPIHandler = () => {
+    axios.post('/api/recruit', {
+      data:{  recruitNo,
+              cardId, 
+              status: recruitBtn.cancel?1:2,
+              requestAt: new Date(),
+             }
+    }, {
+      headers: {
+        'Content-type': 'application/json'
+      },
+    })
+    .then(res => console.log(res));
   };
 
   const [cardData, setCardData] = useState([]);

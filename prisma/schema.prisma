@@ -13,6 +13,8 @@
 // DB 데이터를 유지하면서, schema 수정사항 적용하기
 // npx prisma db push
 
+// Prisma schema 를 읽고 node_modules/@prisma/client 에 Prisma Client 를 생성
+// npx prisma generate
 
 generator client {
   provider = "prisma-client-js"
@@ -35,6 +37,7 @@ model tb_card {
   recruitNum Int?
   tb_user    tb_user      @relation(fields: [userNo], references: [userNo], onDelete: NoAction, onUpdate: NoAction, map: "tb_card_FK")
   tb_like    tb_like[]
+  tb_noti    tb_noti[]
   tb_recruit tb_recruit[]
   tb_reply   tb_reply[]
 
@@ -85,6 +88,7 @@ model tb_user {
   updateAt   DateTime     @default(now()) @db.Timestamp(0)
   tb_card    tb_card[]
   tb_like    tb_like[]
+  tb_noti    tb_noti[]
   tb_recruit tb_recruit[]
   tb_reply   tb_reply[]
 }
@@ -101,4 +105,19 @@ model tb_recruit {
 
   @@index([cardId], map: "tb_recruit_FK")
   @@index([userNo], map: "tb_recruit_FK_1")
+}
+
+model tb_noti {
+  notiNo       BigInt   @id @default(autoincrement())
+  userNo       BigInt
+  cardId       BigInt
+  notiType     Int      @default(0)
+  valid        Int      @default(1) @db.TinyInt
+  targetUserId String   @db.VarChar(100)
+  createAt     DateTime @default(now()) @db.Timestamp(0)
+  tb_user      tb_user  @relation(fields: [userNo], references: [userNo], onDelete: NoAction, onUpdate: NoAction, map: "tb_noti_FK")
+  tb_card      tb_card  @relation(fields: [cardId], references: [cardId], onDelete: NoAction, onUpdate: NoAction, map: "tb_noti_FK_1")
+
+  @@index([userNo], map: "tb_noti_FK")
+  @@index([cardId], map: "tb_noti_FK_1")
 }

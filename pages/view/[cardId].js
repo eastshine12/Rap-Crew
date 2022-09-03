@@ -92,14 +92,14 @@ export async function getServerSideProps({ req, query }) {
   try {
     const res = await axios.get(`http://${req.headers.host}/api/getCard/${query.cardId}`);
     const res2 = await axios.get(`http://${req.headers.host}/api/getReply/${query.cardId}`);
-    const res3 = await axios.get(`http://${req.headers.host}/api/getRecruit/${query.cardId}`);
+    // const res3 = await axios.get(`http://${req.headers.host}/api/getRecruit/${query.cardId}`);
 
     if(res.status === 200 && res2.status === 200) {
       const card = res.data;
       const replys = res2.data;
-      const recruit = res3.data?res3.data:{status:false};
+      // const recruit = res3.data?res3.data:{status:false};
       return {
-        props : { card, replys, recruit },
+        props : { card, replys, },
       }
     }
   } catch(err) {
@@ -116,45 +116,26 @@ export default function card_view({ card, replys, recruit }) {
   const styles = useStyles();
   const router = useRouter();
 
-  const [title, content, userId, userNo, createAt, recruitNum, recruitAt, recruitNo, recruitStatus] = card && [card.title, card.content, card.userId, card.userNo, card.createAt, card.recruitNum, card.recruitAt, recruit.recruitNo, recruit.status];
-  console.log(`recruitNo : ${recruitNo}`);
-  console.log(`recruitStatus : ${recruitStatus}`);
-  const [recruitBtn, setRecruitBtn] = useState({
+  const [title, content, userId, userNo, createAt, recruitNum, recruitAt] = card && [card.title, card.content, card.userId, card.userNo, card.createAt, card.recruitNum, card.recruitAt];
+  
+  const [recruitData, setRecruitData] = useState({
+    id:0,
+    status:1,
     disabled:false,
-    text:recruitStatus?'참여 요청하기':'참여 요청 취소하기',
-    cancel: recruitStatus?true:false,
-  });
-
+  })
+  
   let replysData = replys;
 
   const { cardId } = router.query;
   const { data: session, status } = useSession();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-  const recruitBtnClickHandler = (variant) => () => {
-      if(variant ==='success') {
-        enqueueSnackbar('참여 요청이 완료되었습니다.', {variant});
-        setRecruitBtn({
-          ...recruitBtn,
-          text:'참여 요청 취소하기',
-          cancel: true,
-        });
-      } else {
-        enqueueSnackbar('참여 요청이 취소되었습니다.', {variant});
-        setRecruitBtn({
-          ...recruitBtn,
-          text:'참여 요청하기',
-          cancel: false,
-        });
-      }
-      recruitAPIHandler();
-  };
 
   const recruitAPIHandler = () => {
+
     axios.post('/api/recruit', {
-      data:{  recruitNo,
-              cardId, 
-              status: recruitBtn.cancel?1:2,
+      data:{  cardId, 
+              status: recruitData.status!==1?1:2,
               requestAt: new Date(),
              }
     }, {
@@ -162,13 +143,39 @@ export default function card_view({ card, replys, recruit }) {
         'Content-type': 'application/json'
       },
     })
-    .then(res => console.log(res));
+    .then(res => {
+      console.log(res);
+      setRecruitData({
+        ...recruitData,
+        status: res.data.status,
+      });
+      if(res.data.status === 1) {
+        enqueueSnackbar('참여 요청이 완료되었습니다.', { variant: 'success' });
+      } else {
+        enqueueSnackbar('참여 요청이 취소되었습니다.', { variant: 'warning' });
+      }
+    });
   };
 
-  const [cardData, setCardData] = useState([]);
+  const getRecruitAPIHandler = () => {
+    axios.get(`/api/getRecruit/${cardId}`, {
+      headers: {
+        'Content-type': 'application/json'
+      },
+    })
+    .then(res => {
+      console.log(res);
+      setRecruitData({
+        id: res.data.recruitNo,
+        status: res.data.status,
+      });
+    });
+  };
+
 
   useEffect(() => {
     if(!router.isReady) return;
+    getRecruitAPIHandler();
   }, []);
 
 
@@ -203,10 +210,9 @@ export default function card_view({ card, replys, recruit }) {
 
 
   const recruitEndHandler = () => {
-    setRecruitBtn({
-      ...recruitBtn,
+    setRecruitData({
+      ...recruitData,
       disabled:true,
-      text:'모집이 마감되었습니다.',
     });
 
   }
@@ -476,17 +482,17 @@ export default function card_view({ card, replys, recruit }) {
 
                 <Grid item xs={12} sm={12} md={12} sx={{pt : 1}}>
                   <Button 
-                    variant={!recruitBtn.cancel?"contained":"outlined"} 
+                    variant={recruitData.status===1?"contained":"outlined"} 
                     fullWidth 
-                    color={!recruitBtn.cancel?'info':'warning'}
-                    onClick={!recruitBtn.cancel? recruitBtnClickHandler('success') : recruitBtnClickHandler('warning')}
+                    color={recruitData.status===1?'info':'warning'}
+                    onClick={recruitAPIHandler}
                     sx={{
                       fontSize: '1.1em',
                       height: '3em',
                       fontWeight: 700
                     }}
-                    disabled={recruitBtn.disabled}
-                    >{recruitBtn.text}</Button>
+                    disabled={recruitData.disabled}
+                    >{recruitData.disabled?"모집이 마감되었습니다.":recruitData.status===1?"참여 요청하기":"참여 요청 취소하기"}</Button>
                 </Grid>
 
               </Grid>

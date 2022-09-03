@@ -16,13 +16,17 @@ export default async function handler(req, res) {
   const prisma = new PrismaClient();
 
   if(req.method === 'GET') {
-    const recruit =  await prisma.tb_reply.findMany({
+    const recruit =  await prisma.tb_recruit.findFirst({
       where: {
         cardId: Number(id),
         userNo: Number(session.user.userNo),
       },
+      orderBy:{
+        requestAt : 'desc',
+      }
     });
-    if(recruit.length > 0) {
+    
+    if(recruit) {
       return res.send(recruit);
     } else {
       return res.send("");

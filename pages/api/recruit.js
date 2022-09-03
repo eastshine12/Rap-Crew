@@ -19,14 +19,8 @@ export default async function handler(req, res) {
   try {
     if(req.method === 'POST') {
 
-      const result =  await prisma.tb_recruit.upsert({
-        where: {
-          recruitNo,
-        },
-        update: {
-          status: req.body.data.status,
-        },
-        create: {
+      const result =  await prisma.tb_recruit.create({
+        data: {
           cardId: Number(req.body.data.cardId),
           userNo: Number(session.user.userNo),
           status: req.body.data.status,
@@ -35,7 +29,7 @@ export default async function handler(req, res) {
       });
   
       if(result) {
-        return res.send("OK");
+        return res.send(result);
       };
 
     }

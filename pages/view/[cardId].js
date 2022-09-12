@@ -92,12 +92,10 @@ export async function getServerSideProps({ req, query }) {
   try {
     const res = await axios.get(`http://${req.headers.host}/api/getCard/${query.cardId}`);
     const res2 = await axios.get(`http://${req.headers.host}/api/getReply/${query.cardId}`);
-    // const res3 = await axios.get(`http://${req.headers.host}/api/getRecruit/${query.cardId}`);
 
     if(res.status === 200 && res2.status === 200) {
       const card = res.data;
       const replys = res2.data;
-      // const recruit = res3.data?res3.data:{status:false};
       return {
         props : { card, replys, },
       }
@@ -111,7 +109,7 @@ export async function getServerSideProps({ req, query }) {
 
 
 
-export default function card_view({ card, replys, recruit }) {
+export default function card_view({ card, replys }) {
   
   const styles = useStyles();
   const router = useRouter();
@@ -120,8 +118,8 @@ export default function card_view({ card, replys, recruit }) {
   
   const [recruitData, setRecruitData] = useState({
     id:0,
-    status:1,
-    disabled:false,
+    status:0,  // 1:신청 2:신청취소 3:작성자 4:마감
+    disabled:false, // 1,2 true 3,4 false
   })
   
   let replysData = replys;
@@ -149,7 +147,7 @@ export default function card_view({ card, replys, recruit }) {
         ...recruitData,
         status: res.data.status,
       });
-      if(res.data.status === 1) {
+      if(res.data.status === 2) {
         enqueueSnackbar('참여 요청이 완료되었습니다.', { variant: 'success' });
       } else {
         enqueueSnackbar('참여 요청이 취소되었습니다.', { variant: 'warning' });
@@ -158,25 +156,37 @@ export default function card_view({ card, replys, recruit }) {
   };
 
   const getRecruitAPIHandler = () => {
-    axios.get(`/api/getRecruit/${cardId}`, {
-      headers: {
-        'Content-type': 'application/json'
-      },
-    })
-    .then(res => {
-      console.log(res);
-      setRecruitData({
-        id: res.data.recruitNo,
-        status: res.data.status,
-      });
-    });
+    console.log(recruitData);
+    if(recruitData.status !== 4) {
+      if(session && userNo === session.user.userNo) {
+        setRecruitData({
+          ...recruitData,
+          status: 3,
+          disabled: false,
+        });
+      } else {
+        axios.get(`/api/getRecruit/${cardId}`, {
+          headers: {
+            'Content-type': 'application/json'
+          },
+        })
+        .then(res => {
+          console.log(res);
+          setRecruitData({
+            id: res.data.recruitNo,
+            status: res.data.status,
+          });
+        });
+      };
+    };
+    
   };
 
 
   useEffect(() => {
     if(!router.isReady) return;
     getRecruitAPIHandler();
-  }, []);
+  }, [recruitData]);
 
 
   const deleteCardHandler = () => {
@@ -207,14 +217,29 @@ export default function card_view({ card, replys, recruit }) {
     }
   };
 
-
+  const btnText = (status) => {
+    switch(status) {
+      case 1:
+        return "참여 요청하기";
+      case 2:
+        return "참여 요청 취소하기";
+      case 3:
+        return "참여 진행중";
+      case 4:
+        return "모집이 마감되었습니다.";
+    }
+    
+  }
 
   const recruitEndHandler = () => {
-    setRecruitData({
-      ...recruitData,
-      disabled:true,
-    });
-
+    
+    if(recruitData.status !== 4) {
+      setRecruitData({
+        ...recruitData,
+        disabled:true,
+        status: 4,
+      });
+    };
   }
 
   return (
@@ -492,9 +517,8 @@ export default function card_view({ card, replys, recruit }) {
                       fontWeight: 700
                     }}
                     disabled={recruitData.disabled}
-                    >{recruitData.disabled?"모집이 마감되었습니다.":recruitData.status===1?"참여 요청하기":"참여 요청 취소하기"}</Button>
+                    >{btnText(recruitData.status)}</Button>
                 </Grid>
-
               </Grid>
             </Grid>
 

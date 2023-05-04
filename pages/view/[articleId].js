@@ -90,14 +90,15 @@ const useStyles = makeStyles({
 export async function getServerSideProps({ req, query }) {
   
   try {
-    const res = await axios.get(`http://${req.headers.host}/api/getCard/${query.cardId}`);
-    const res2 = await axios.get(`http://${req.headers.host}/api/getReply/${query.cardId}`);
+    const getArticleApiUrl = `${process.env.API_URL}/api/article/${query.articleId}`;
+    const res = await axios.get(getArticleApiUrl);
+    const res2 = await axios.get(`http://${req.headers.host}/api/getReply/${query.articleId}`);
 
     if(res.status === 200 && res2.status === 200) {
-      const card = res.data;
+      const article = res.data;
       const replys = res2.data;
       return {
-        props : { card, replys, },
+        props : { article, replys, },
       }
     }
   } catch(err) {
@@ -109,22 +110,24 @@ export async function getServerSideProps({ req, query }) {
 
 
 
-export default function card_view({ card, replys }) {
+export default function card_view({ article, replys }) {
   
   const styles = useStyles();
   const router = useRouter();
+  const [title, content, image, nickname, createdAt, recruitNum, recruitAt] 
+    = article && [article.title, article.content, article.image, article.nickname, 
+                  article.createdAt, article.recruitNum, article.recruitAt];
 
-  const [title, content, userId, userNo, createAt, recruitNum, recruitAt] = card && [card.title, card.content, card.userId, card.userNo, card.createAt, card.recruitNum, card.recruitAt];
-  
   const [recruitData, setRecruitData] = useState({
     id:0,
     status:0,  // 1:신청 2:신청취소 3:작성자 4:마감
-    disabled:false, // 1,2 true 3,4 false
+    disabled:false, // 1,2 false 3,4 true,
+    btnText: '',
   })
   
   let replysData = replys;
 
-  const { cardId } = router.query;
+  const { articleId } = router.query;
   const { data: session, status } = useSession();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
@@ -132,7 +135,7 @@ export default function card_view({ card, replys }) {
   const recruitAPIHandler = () => {
 
     axios.post('/api/recruit', {
-      data:{  cardId, 
+      data:{  articleId, 
               status: recruitData.status!==1?1:2,
               requestAt: new Date(),
              }
@@ -162,10 +165,11 @@ export default function card_view({ card, replys }) {
         setRecruitData({
           ...recruitData,
           status: 3,
-          disabled: false,
+          disabled: true,
+          btnText: "현재 모집중",
         });
       } else {
-        axios.get(`/api/getRecruit/${cardId}`, {
+        axios.get(`/api/getRecruit/${articleId}`, {
           headers: {
             'Content-type': 'application/json'
           },
@@ -175,6 +179,8 @@ export default function card_view({ card, replys }) {
           setRecruitData({
             id: res.data.recruitNo,
             status: res.data.status,
+            disabled: false,
+            btnText: res.data.status===1?"참여 요청 취소하기":"참여 요청하기",
           });
         });
       };
@@ -183,17 +189,18 @@ export default function card_view({ card, replys }) {
   };
 
 
-  useEffect(() => {
-    if(!router.isReady) return;
-    getRecruitAPIHandler();
-  }, [recruitData]);
+  // useEffect(() => {
+  //   if(!router.isReady) return;
+  //   // recruitEndHandler();
+  //   // getRecruitAPIHandler();
+  // }, [recruitData]);
 
 
   const deleteCardHandler = () => {
     
     if (confirm("게시글을 삭제하시겠습니까?")) {
       axios.delete('/api/deleteCard', {
-          data:{ cardId }
+          data:{ articleId }
         }, {
           headers: {
             'Content-type': 'application/json'
@@ -232,14 +239,12 @@ export default function card_view({ card, replys }) {
   }
 
   const recruitEndHandler = () => {
-    
-    if(recruitData.status !== 4) {
-      setRecruitData({
-        ...recruitData,
-        disabled:true,
-        status: 4,
-      });
-    };
+    setRecruitData({
+      ...recruitData,
+      disabled:true,
+      status: 4,
+      btnText: '모집이 마감되었습니다.',
+    });
   }
 
   return (
@@ -296,7 +301,7 @@ export default function card_view({ card, replys }) {
                       fontWeight: 600,
                     }}
                   >
-                    { userId }
+                    { nickname }
                     <FavoriteBorderIcon className={styles.favoIcon}/>
                     <ShareIcon className={styles.shareIcon}/>
                   </Typography>
@@ -305,7 +310,7 @@ export default function card_view({ card, replys }) {
                       fontSize: 15,
                     }}
                   >
-                    { String(createAt).substring(0, 10).replace(/\-/gi, ".") }
+                    { String(createdAt).substring(0, 10).replace(/\-/gi, ".") }
                   </Typography>
                 </div>
               </Grid>
@@ -517,7 +522,7 @@ export default function card_view({ card, replys }) {
                       fontWeight: 700
                     }}
                     disabled={recruitData.disabled}
-                    >{btnText(recruitData.status)}</Button>
+                    >{recruitData.btnText}</Button>
                 </Grid>
               </Grid>
             </Grid>

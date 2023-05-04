@@ -80,6 +80,8 @@ export default function signup() {
       password: '',
       password2: '',
       email: '',
+      emailAgree: false,
+      nickname: null,
       agreeChk: false,
     });
 
@@ -137,13 +139,16 @@ export default function signup() {
       } else {
         
         const reqData = {
-          userId: user.userId,
+          loginId: user.userId,
           password: user.password,
+          nickname: user.nickname,
           email: user.email,
-          agreement: user.agreeChk,
+          emailAgree: user.emailAgree,
         }
         
-        axios.post('/api/addUser', reqData, {
+        const apiUrl = `${process.env.API_URL}/api/user`;
+
+        axios.post(apiUrl, reqData, {
           headers: {
             'Content-type': 'application/json'
           },
@@ -155,11 +160,11 @@ export default function signup() {
     const router = useRouter();
     const resultHandler = (res) => {
       console.log(res.data);
-      if(res.data === 'EXIST') {
-        alert("이미 존재하는 ID입니다.");
-      } else if(res.data === 'OK') {
+      if(res.data.result === 'SUCCESS') {
         alert('회원가입이 완료되었습니다.');
         router.push('/login');
+      } else if(res.data.result === 'FAIL') {
+        alert("이미 존재하는 ID입니다.");
       } else {
         alert('회원가입에 실패했습니다.')
       };
@@ -257,6 +262,16 @@ export default function signup() {
                           />
                         </Grid>
                         <Grid item xs={12}>
+                          <TextField
+                            fullWidth
+                            name="nickname"
+                            label="닉네임"
+                            id="nickname"
+                            autoComplete="nickname"
+                            onChange={onChangeText}
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
                           <FormControlLabel
                             control={<Checkbox value="allowService" color="primary" name="agreeChk" onChange={onChangeValue}/>}
                             label="[필수] 서비스 이용 정책에 대한 동의"
@@ -277,6 +292,10 @@ export default function signup() {
                               </Typography>
                             </Box>
                           </Modal>
+                          <FormControlLabel
+                            control={<Checkbox value="allowEmail" color="primary" name="eamilAgree" onChange={onChangeValue}/>}
+                            label="[선택] 이메일 수신 동의"
+                          />
                         </Grid>
                       </Grid>
                       <Button

@@ -64,7 +64,7 @@ export default function login() {
     const styles = useStyles();
 
     const [user, setUser] = useState ({
-      userId: '',
+      loginId: '',
       password: '',
     });
 
@@ -82,7 +82,7 @@ export default function login() {
     
       const reqData = {
         redirect : false,
-        userId: user.userId,
+        loginId: user.loginId,
         password: user.password,
       };
       
@@ -137,10 +137,10 @@ export default function login() {
                         <Grid item xs={12}>
                           <TextField
                             autoComplete="given-name"
-                            name="userId"
+                            name="loginId"
                             required
                             fullWidth
-                            id="userId"
+                            id="loginId"
                             label="아이디"
                             autoFocus
                             onChange={onChangeText}

@@ -17,7 +17,7 @@ import Link from 'next/link';
 import axios from 'axios';
 
 
-const testCards = [
+const testArticles = [
   {
     boardNo : 1,
     title: '제 비트에 같이 작업하실분! 피쳐링 필요하신분',
@@ -176,12 +176,14 @@ export default function CrewCards() {
 
   const styles = useStyles();
   // const mediaStyles = useCoverCardMediaStyles();
-  const [cards, setCards] = useState([]);
+  const [Articles, setArticles] = useState([]);
+  const apiUrl = `${process.env.API_URL}/api/article/all`;
 
   useEffect(() => {
-    axios.get('api/getAllCards')
+    axios.get(apiUrl)
     .then(res => {
-      setCards(res.data);
+      setArticles(res.data.data);
+      console.log(res.data.data);
     })
   }, []);
 
@@ -189,11 +191,11 @@ export default function CrewCards() {
   return (
     <Container sx={{ py: 8 }}>
       <Grid container spacing={8}>
-        {console.log(cards.length)}
-        {cards!=='NOK'?cards.map((card) => (
-          <Grid item key={card.cardId} xs={12} sm={6} md={4}>
+        {console.log(Articles.length)}
+        {Articles.length!==0?Articles.map((article) => (
+          <Grid item key={article.id} xs={12} sm={6} md={4}>
 
-            <Link href={`./view/${card.cardId}`}>
+            <Link href={`./view/${article.id}`}>
               <Card className={styles.card}>
                 <Box className={styles.main} minHeight={300} position={'relative'}>
                   <CardMedia
@@ -204,7 +206,7 @@ export default function CrewCards() {
                   <div className={styles.content}>
                     <div className={styles.tag}>New</div>
                     <Typography variant={'h2'} className={styles.title}>
-                      {card.title}
+                      {article.title}
                     </Typography>
                   </div>
                 </Box>
@@ -226,11 +228,11 @@ export default function CrewCards() {
                       color='action'
                       sx={{ fontSize: 50 }}
                     /> */}
-                    <span className={styles.userId}>{card.tb_user.userId}</span>
+                    <span className={styles.userId}>{article.nickname}</span>
                   </div>
                   <div>
                     
-                    <p>{card.createAt.substring(0, 10).replace(/\-/gi, ".")}
+                    <p>{article.createdAt.substring(0, 10).replace(/\-/gi, ".")}
                       <FavoriteBorderIcon className={styles.favoIcon}/>
                       <ShareIcon className={styles.shareIcon}/>
 

@@ -14,7 +14,7 @@ export default NextAuth({
       name: 'Rap-Crew',
 
       credentials: {
-        userId: { label: "아이디", type: "text", placeholder: "아이디를 입력하세요." },
+        loginId: { label: "아이디", type: "text", placeholder: "아이디를 입력하세요." },
         password: {  label: "비밀번호", type: "password" }
       },
       
@@ -22,6 +22,7 @@ export default NextAuth({
 
         console.log(`credentials : ${JSON.stringify(credentials)}`);
         
+        /*
         const user = await prisma.tb_user.findFirst({
           where: {
             userId: credentials.userId,
@@ -34,6 +35,16 @@ export default NextAuth({
             status: true,
           },
         });
+        */
+
+        const user = await fetch(`${process.env.BASE_URL}/api/auth/signin`, {
+          method: "POST",
+          body: JSON.stringify(credentials),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
         console.log(`users : ${JSON.stringify(user)}`);
         if (!user) {
           throw new Error('user not found.');

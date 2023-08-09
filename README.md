@@ -23,6 +23,9 @@
 힙합 콜라보레이션, 단체곡, 믹스테잎 등 힙합 뮤지션들을 위한 구인 커뮤니티
 </p>
 
+
+###### Back 구현 repository는 https://github.com/eastshine12/Rap-Crew-API
+
 <!-- <p align="center">
 GIF Images
 </p> -->
